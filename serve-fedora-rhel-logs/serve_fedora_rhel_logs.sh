@@ -1,4 +1,3 @@
-#!/bin/bash
 set -euo pipefail
 
 # Define where to temporarily export the secure log
