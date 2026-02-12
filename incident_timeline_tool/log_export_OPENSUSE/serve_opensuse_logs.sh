@@ -1,3 +1,5 @@
+#!/bin/bash 
+
 # Define where to temporarily export the messages log
 EXPORT_FILE="$HOME/log_export/messages.log"
 
