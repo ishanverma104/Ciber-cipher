@@ -1,1 +1,0 @@
-we will add data sources for threat intel detection such as MITRE here, as well as data sources from college cyber lab
