@@ -288,3 +288,111 @@ d3.json("../data/parsed_fim_logs.json").then(fimData => {
   console.error("FIM data error:", err);
 });
 
+
+// ============= Security Alerts =============
+async function loadAlerts() {
+  try {
+    const response = await fetch('../api/alerts_api.py');
+    const data = await response.json();
+    renderAlertsTable(data.alerts || []);
+    updateAlertStats(data.alerts || []);
+  } catch (err) {
+    console.error("Error loading alerts:", err);
+    // Fallback: empty alerts for now
+    renderAlertsTable([]);
+    updateAlertStats([]);
+  }
+}
+
+function renderAlertsTable(alerts) {
+  const rows = alerts.map(a => {
+    const severityClass = `alert-${a.severity?.toLowerCase() || 'low'}`;
+    const status = a.status || 'open';
+    return [
+      new Date(a.timestamp).toLocaleString(),
+      `<span class="alert-badge ${severityClass}">${a.severity || 'LOW'}</span>`,
+      a.title || '',
+      a.source_ip || '-',
+      a.hostname || '-',
+      status,
+      `<button onclick="acknowledgeAlert(${a.id})">ACK</button> 
+       <button onclick="closeAlert(${a.id})">Close</button>`
+    ];
+  });
+
+  if (window.alertsDT) {
+    window.alertsDT.destroy();
+  }
+
+  window.alertsDT = $('#alerts-table').DataTable({
+    destroy: true,
+    pageLength: 10,
+    order: [[0, 'desc']]
+  });
+
+  window.alertsDT.clear();
+  window.alertsDT.rows.add(rows);
+  window.alertsDT.draw();
+}
+
+function updateAlertStats(alerts) {
+  const stats = { CRITICAL: 0, HIGH: 0, MEDIUM: 0, LOW: 0 };
+  alerts.forEach(a => {
+    const sev = a.severity?.toUpperCase() || 'LOW';
+    if (stats[sev] !== undefined) stats[sev]++;
+  });
+
+  document.getElementById('statCritical').textContent = stats.CRITICAL;
+  document.getElementById('statHigh').textContent = stats.HIGH;
+  document.getElementById('statMedium').textContent = stats.MEDIUM;
+  document.getElementById('statLow').textContent = stats.LOW;
+}
+
+window.acknowledgeAlert = async function(alertId) {
+  try {
+    await fetch(`/api/alerts/${alertId}/acknowledge`, {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({acknowledged_by: 'analyst'})
+    });
+    loadAlerts();
+  } catch (err) {
+    alert('Failed to acknowledge alert');
+  }
+};
+
+window.closeAlert = async function(alertId) {
+  try {
+    await fetch(`/api/alerts/${alertId}/close`, {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'}
+    });
+    loadAlerts();
+  } catch (err) {
+    alert('Failed to close alert');
+  }
+};
+
+document.getElementById('runDetection')?.addEventListener('click', async () => {
+  try {
+    const response = await fetch('/api/detect', {method: 'POST'});
+    const result = await response.json();
+    alert(`Detection complete. Generated ${result.alerts_generated} alerts.`);
+    loadAlerts();
+  } catch (err) {
+    alert('Detection failed');
+  }
+});
+
+document.getElementById('download-alerts-csv')?.addEventListener('click', () => {
+  if (!window.alertsDT) return;
+  downloadCsvFromCurrentPage(window.alertsDT, 'alerts_page.csv', [
+    'Time', 'Severity', 'Title', 'Source IP', 'Hostname', 'Status'
+  ]);
+});
+
+// Initialize alerts tab when DOM ready
+document.addEventListener('DOMContentLoaded', () => {
+  // Slight delay to ensure API is ready
+  setTimeout(loadAlerts, 500);
+});
