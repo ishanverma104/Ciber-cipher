@@ -39,7 +39,7 @@ IP="$(hostname -I | awk '{print $1}')"
 
 echo -e "\u2705 secure.log is now available at: http://$IP/log_export/secure.log"
 
-# This script is used for sending logs from Fedora/RHEL systems
+# This script is used for sending logs from Fedora/RHEL system
 # to the Incident Timeline Reconstruction Tool's Server where the logs will be visualized
 
 
