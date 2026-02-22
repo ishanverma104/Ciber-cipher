@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Incident Timeline Visualization</title>
+  <title>SIEM Incident Timeline Visualization</title>
 
   <!-- D3.js -->
   <script src="https://d3js.org/d3.v7.min.js"></script>
@@ -84,6 +84,43 @@
       cursor: pointer;
     }
 
+    .alert-badge {
+      padding: 4px 8px;
+      border-radius: 4px;
+      font-weight: bold;
+      font-size: 12px;
+    }
+
+    .alert-critical { background-color: #dc3545; color: white; }
+    .alert-high { background-color: #fd7e14; color: white; }
+    .alert-medium { background-color: #ffc107; color: black; }
+    .alert-low { background-color: #17a2b8; color: white; }
+
+    .alert-stats {
+      display: flex;
+      gap: 20px;
+      margin-bottom: 20px;
+      padding: 15px;
+      background: white;
+      border-radius: 8px;
+    }
+
+    .stat-box {
+      text-align: center;
+      padding: 10px 20px;
+      border-radius: 4px;
+    }
+
+    .stat-critical { background: #dc3545; color: white; }
+    .stat-high { background: #fd7e14; color: white; }
+    .stat-medium { background: #ffc107; color: black; }
+    .stat-low { background: #17a2b8; color: white; }
+
+    .threat-indicator {
+      color: red;
+      font-weight: bold;
+    }
+
     /* Dark Mode Styles */
     body.dark {
       background-color: #121212;
@@ -127,14 +164,19 @@
       color: #e0e0e0;
       border: 1px solid #444;
     }
+
+    body.dark .alert-stats {
+      background: #1e1e1e;
+    }
   </style>
 </head>
 <body>
 
   <div class="tab-buttons">
     <button onclick="showTab('timelineTab')">Timeline Logs</button>
+    <button onclick="showTab('alertsTab')">Security Alerts</button>
     <button onclick="showTab('fimTab')">FIM Logs</button>
-    <button id="darkModeToggle">🌙 Dark Mode</button>
+    <button id="darkModeToggle">Dark Mode</button>
   </div>
 
   <!-- Timeline Logs Tab -->
@@ -158,6 +200,50 @@
           <th>Process [PID]</th>
           <th>Message</th>
           <th>MITRE Techniques</th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+  </div>
+
+  <!-- Security Alerts Tab -->
+  <div id="alertsTab" class="tab">
+    <h2>Security Alert Overview</h2>
+    <div class="alert-stats" id="alertStats">
+      <div class="stat-box stat-critical">
+        <div id="statCritical">0</div>
+        <div>Critical</div>
+      </div>
+      <div class="stat-box stat-high">
+        <div id="statHigh">0</div>
+        <div>High</div>
+      </div>
+      <div class="stat-box stat-medium">
+        <div id="statMedium">0</div>
+        <div>Medium</div>
+      </div>
+      <div class="stat-box stat-low">
+        <div id="statLow">0</div>
+        <div>Low</div>
+      </div>
+    </div>
+
+    <div class="actions">
+      <button id="runDetection">Run Detection</button>
+      <button id="download-alerts-csv">Download CSV</button>
+    </div>
+
+    <h2>Active Alerts</h2>
+    <table id="alerts-table" class="display" style="width:100%">
+      <thead>
+        <tr>
+          <th>Time</th>
+          <th>Severity</th>
+          <th>Title</th>
+          <th>Source IP</th>
+          <th>Hostname</th>
+          <th>Status</th>
+          <th>Actions</th>
         </tr>
       </thead>
       <tbody></tbody>
@@ -192,15 +278,13 @@
       document.getElementById(id).classList.add('active');
     }
 
-    // Dark mode toggle
     const toggleBtn = document.getElementById('darkModeToggle');
     function setDarkMode(enabled) {
       document.body.classList.toggle('dark', enabled);
       localStorage.setItem('darkMode', enabled ? 'true' : 'false');
-      toggleBtn.textContent = enabled ? '☀ Light Mode' : '🌙 Dark Mode';
+      toggleBtn.textContent = enabled ? 'Light Mode' : 'Dark Mode';
     }
 
-    // Load preference
     setDarkMode(localStorage.getItem('darkMode') === 'true');
 
     toggleBtn.addEventListener('click', () => {
@@ -211,4 +295,3 @@
   <script src="timeline.js"></script>
 </body>
 </html>
-
