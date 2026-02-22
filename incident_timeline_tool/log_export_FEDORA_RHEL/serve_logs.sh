@@ -1,4 +1,5 @@
 #!/bin/bash
+
 # Define where to temporarily export the secure log
 EXPORT_FILE="$HOME/log_export/secure.log"
 
