@@ -9,21 +9,57 @@ GREEN='\033[0;32m'
 YELLOW='\033[1;33m'
 NC='\033[0m'
 
-print_error() { echo -e "${RED}[!]${NC} $1"; }
-print_success() { echo -e "${GREEN}[+]${NC} $1"; }
-print_info() { echo -e "${YELLOW}[*]${NC} $1"; }
+log_error() { echo -e "${RED}[!]${NC} $1"; }
+log_success() { echo -e "${GREEN}[+]${NC} $1"; }
+log_info() { echo -e "${YELLOW}[*]${NC} $1"; }
 
-install_apache() {
-    print_info "Installing Apache..."
+detect_distro() {
+    if [ -f /etc/os-release ]; then
+        . /etc/os-release
+        echo "${ID:-unknown}"
+    else
+        echo "unknown"
+    fi
+}
+
+install_dependencies() {
+    local distro
+    distro=$(detect_distro)
+    
+    log_info "Detected: $distro"
+    log_info "Installing Apache and dependencies..."
+    
+    if ! command -v apt-get &> /dev/null; then
+        log_error "apt-get not found. This script is for Debian/Ubuntu."
+        exit 1
+    fi
+    
     apt-get update
-    apt-get install -y apache2
+    
+    local -a packages
+    packages=("apache2" "python3")
+    
+    for pkg in "${packages[@]}"; do
+        if dpkg -l | grep -q "^ii  $pkg "; then
+            log_info "$pkg already installed"
+        else
+            apt-get install -y "$pkg"
+        fi
+    done
+    
     systemctl enable apache2
     systemctl start apache2
-    print_success "Apache installed and started"
+    
+    if systemctl is-active --quiet apache2; then
+        log_success "Apache installed and running"
+    else
+        log_error "Apache failed to start"
+        exit 1
+    fi
 }
 
 configure_apache() {
-    print_info "Configuring Apache..."
+    log_info "Configuring Apache..."
     
     mkdir -p /etc/apache2/conf-available
     cat > /etc/apache2/conf-available/astro-siem.conf << 'EOF'
@@ -36,13 +72,16 @@ Alias /log_export /var/lib/astro-siem/exports
 </Directory>
 EOF
     
-    a2enconf astro-siem
+    if command -v a2enconf &> /dev/null; then
+        a2enconf astro-siem
+    fi
+    
     systemctl restart apache2
-    print_success "Apache configured"
+    log_success "Apache configured"
 }
 
 install_agent_files() {
-    print_info "Installing agent files..."
+    log_info "Installing agent files..."
     
     mkdir -p "$AGENT_INSTALL_DIR"
     
@@ -52,16 +91,16 @@ install_agent_files() {
     cp "$SCRIPT_DIR/fim-agent.py" "$AGENT_INSTALL_DIR/"
     chmod +x "$AGENT_INSTALL_DIR/fim-agent.py"
     
-    print_success "Agent files installed to $AGENT_INSTALL_DIR"
+    log_success "Agent files installed to $AGENT_INSTALL_DIR"
 }
 
 install_systemd() {
-    print_info "Installing systemd service and timer..."
+    log_info "Installing systemd service and timer..."
     
     cat > /etc/systemd/system/astro-siem-agent.service << 'EOF'
 [Unit]
-Description=AstroSIEM Agent - Log Exporter
-After=network.target
+Description=AstroSIEM Agent - Log Exporter (Debian/Ubuntu)
+After=network.target apache2.service
 
 [Service]
 Type=oneshot
@@ -88,39 +127,51 @@ EOF
     systemctl daemon-reload
     systemctl enable astro-siem-agent.timer
     
-    print_success "Systemd service and timer installed"
+    log_success "Systemd service and timer installed"
 }
 
 main() {
     if [ "$EUID" -ne 0 ]; then
-        print_error "This script must be run as root"
+        log_error "This script must be run as root"
         exit 1
     fi
     
-    install_apache
+    local distro
+    distro=$(detect_distro)
+    
+    if [[ ! "$distro" =~ ^(debian|ubuntu)$ ]]; then
+        log_error "This installer is for Debian/Ubuntu. Detected: $distro"
+        exit 1
+    fi
+    
+    log_info "Installing AstroSIEM Agent for Debian/Ubuntu..."
+    
+    install_dependencies
     configure_apache
     install_agent_files
     install_systemd
     
     mkdir -p /var/lib/astro-siem/exports
     
-    print_info "Running initial log export..."
+    log_info "Running initial log export..."
     if "$AGENT_INSTALL_DIR/agent.sh"; then
-        print_success "Initial export completed"
+        log_success "Initial export completed"
     else
-        print_error "Initial export failed"
+        log_error "Initial export failed"
     fi
     
     systemctl start astro-siem-agent.timer
     
+    local ip
     ip=$(hostname -I | awk '{print $1}')
     
     echo ""
     echo "========================================"
-    print_success "Installation Complete!"
+    log_success "Installation Complete!"
     echo "========================================"
     echo "Agent URL: http://$ip/log_export/latest/"
     echo "Timer: systemctl list-timers | grep astro-siem"
+    echo "Manual run: systemctl start astro-siem-agent"
 }
 
 main "$@"
