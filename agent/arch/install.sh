@@ -9,22 +9,80 @@ GREEN='\033[0;32m'
 YELLOW='\033[1;33m'
 NC='\033[0m'
 
-print_error() { echo -e "${RED}[!]${NC} $1"; }
-print_success() { echo -e "${GREEN}[+]${NC} $1"; }
-print_info() { echo -e "${YELLOW}[*]${NC} $1"; }
+log_error() { echo -e "${RED}[!]${NC} $1"; }
+log_success() { echo -e "${GREEN}[+]${NC} $1"; }
+log_info() { echo -e "${YELLOW}[*]${NC} $1"; }
 
-install_apache() {
-    print_info "Installing Apache..."
-    pacman -S --noconfirm apache
-    systemctl enable httpd
-    systemctl start httpd
-    print_success "Apache installed and started"
+detect_distro() {
+    if [ -f /etc/os-release ]; then
+        . /etc/os-release
+        echo "${ID:-unknown}"
+    else
+        echo "unknown"
+    fi
+}
+
+install_dependencies() {
+    local distro
+    distro=$(detect_distro)
+    
+    log_info "Detected: $distro"
+    log_info "Installing Apache and dependencies..."
+    
+    if ! command -v pacman &> /dev/null; then
+        log_error "pacman not found. This script is for Arch Linux."
+        exit 1
+    fi
+    
+    local -a packages
+    packages=("apache" "python")
+    
+    for pkg in "${packages[@]}"; do
+        if pacman -Q "$pkg" &> /dev/null; then
+            log_info "$pkg already installed"
+        else
+            pacman -S --noconfirm "$pkg"
+        fi
+    done
+    
+    local apache_svc
+    apache_svc=$(get_apache_service)
+    
+    systemctl enable "$apache_svc"
+    systemctl start "$apache_svc"
+    
+    if systemctl is-active --quiet "$apache_svc"; then
+        log_success "Apache installed and running"
+    else
+        log_error "Apache failed to start"
+        exit 1
+    fi
+}
+
+get_apache_service() {
+    if command -v httpd &> /dev/null; then
+        echo "httpd"
+    elif command -v apache2 &> /dev/null; then
+        echo "apache2"
+    else
+        echo "httpd"
+    fi
 }
 
 configure_apache() {
-    print_info "Configuring Apache..."
+    log_info "Configuring Apache..."
     
-    cat > /etc/httpd/conf/extra/astro-siem.conf << 'EOF'
+    local apache_svc
+    apache_svc=$(get_apache_service)
+    
+    local conf_dir="/etc/httpd/conf/extra"
+    if [ -d /etc/apache2 ]; then
+        conf_dir="/etc/apache2/conf/extra"
+    fi
+    
+    mkdir -p "$conf_dir"
+    
+    cat > "$conf_dir/astro-siem.conf" << 'EOF'
 Alias /log_export /var/lib/astro-siem/exports
 
 <Directory /var/lib/astro-siem/exports>
@@ -34,16 +92,22 @@ Alias /log_export /var/lib/astro-siem/exports
 </Directory>
 EOF
     
-    if ! grep -q "Include conf/extra/astro-siem.conf" /etc/httpd/conf/httpd.conf; then
-        echo "Include conf/extra/astro-siem.conf" >> /etc/httpd/conf/httpd.conf
+    if [ -f /etc/httpd/conf/httpd.conf ]; then
+        if ! grep -q "Include conf/extra/astro-siem.conf" /etc/httpd/conf/httpd.conf; then
+            echo "Include conf/extra/astro-siem.conf" >> /etc/httpd/conf/httpd.conf
+        fi
+    elif [ -f /etc/apache2/apache2.conf ]; then
+        if ! grep -q "Include conf/extra/astro-siem.conf" /etc/apache2/apache2.conf; then
+            echo "Include conf/extra/astro-siem.conf" >> /etc/apache2/apache2.conf
+        fi
     fi
     
-    systemctl restart httpd
-    print_success "Apache configured"
+    systemctl restart "$apache_svc"
+    log_success "Apache configured"
 }
 
 install_agent_files() {
-    print_info "Installing agent files..."
+    log_info "Installing agent files..."
     
     mkdir -p "$AGENT_INSTALL_DIR"
     
@@ -53,20 +117,23 @@ install_agent_files() {
     cp "$SCRIPT_DIR/fim-agent.py" "$AGENT_INSTALL_DIR/"
     chmod +x "$AGENT_INSTALL_DIR/fim-agent.py"
     
-    print_success "Agent files installed to $AGENT_INSTALL_DIR"
+    log_success "Agent files installed to $AGENT_INSTALL_DIR"
 }
 
 install_systemd() {
-    print_info "Installing systemd service and timer..."
+    log_info "Installing systemd service and timer..."
     
-    cat > /etc/systemd/system/astro-siem-agent.service << 'EOF'
+    local apache_svc
+    apache_svc=$(get_apache_service)
+    
+    cat > /etc/systemd/system/astro-siem-agent.service << EOF
 [Unit]
-Description=AstroSIEM Agent - Log Exporter
-After=network.target
+Description=AstroSIEM Agent - Log Exporter (Arch Linux)
+After=network.target $apache_svc.service
 
 [Service]
 Type=oneshot
-ExecStart=/opt/astro-siem/agent/arch/agent.sh
+ExecStart=$AGENT_INSTALL_DIR/agent.sh
 User=root
 StandardOutput=journal
 StandardError=journal
@@ -89,39 +156,51 @@ EOF
     systemctl daemon-reload
     systemctl enable astro-siem-agent.timer
     
-    print_success "Systemd service and timer installed"
+    log_success "Systemd service and timer installed"
 }
 
 main() {
     if [ "$EUID" -ne 0 ]; then
-        print_error "This script must be run as root"
+        log_error "This script must be run as root"
         exit 1
     fi
     
-    install_apache
+    local distro
+    distro=$(detect_distro)
+    
+    if [ "$distro" != "arch" ]; then
+        log_error "This installer is for Arch Linux. Detected: $distro"
+        exit 1
+    fi
+    
+    log_info "Installing AstroSIEM Agent for Arch Linux..."
+    
+    install_dependencies
     configure_apache
     install_agent_files
     install_systemd
     
     mkdir -p /var/lib/astro-siem/exports
     
-    print_info "Running initial log export..."
+    log_info "Running initial log export..."
     if "$AGENT_INSTALL_DIR/agent.sh"; then
-        print_success "Initial export completed"
+        log_success "Initial export completed"
     else
-        print_error "Initial export failed"
+        log_error "Initial export failed"
     fi
     
     systemctl start astro-siem-agent.timer
     
+    local ip
     ip=$(hostname -I | awk '{print $1}')
     
     echo ""
     echo "========================================"
-    print_success "Installation Complete!"
+    log_success "Installation Complete!"
     echo "========================================"
     echo "Agent URL: http://$ip/log_export/latest/"
     echo "Timer: systemctl list-timers | grep astro-siem"
+    echo "Manual run: systemctl start astro-siem-agent"
 }
 
 main "$@"
