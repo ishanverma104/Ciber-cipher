@@ -1,4 +1,3 @@
-#!/bin/bash
 set -euo pipefail
 
 STATE_DIR="/var/lib/astro-siem"
