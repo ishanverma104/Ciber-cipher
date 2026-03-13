@@ -1,0 +1,1939 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>AstroSIEM</title>
+  <script src="https://d3js.org/d3.v7.min.js"></script>
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <link rel="stylesheet" href="https://cdn.datatables.net/1.13.4/css/jquery.dataTables.min.css"/>
+  <script src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"></script>
+  <!-- Leaflet.js for GeoIP Map -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <!-- Leaflet Heat Plugin -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet.heat/0.2.0/leaflet-heat.js"></script>
+  <!-- Auth Module -->
+  <script src="auth.js"></script>
+  <style>
+    :root {
+      --bg-primary: #f8f9fa;
+      --bg-secondary: #ffffff;
+      --bg-card: #ffffff;
+      --text-primary: #212529;
+      --text-secondary: #6c757d;
+      --border-color: #dee2e6;
+      --accent: #0d6efd;
+      --accent-hover: #0b5ed7;
+      --critical: #9c27b0;
+      --error: #dc3545;
+      --warning: #ffc107;
+      --success: #198754;
+      --info: #0dcaf0;
+      --shadow: 0 2px 8px rgba(0,0,0,0.08);
+      --radius: 8px;
+    }
+
+    .dark {
+      --bg-primary: #121212;
+      --bg-secondary: #1e1e1e;
+      --bg-card: #252525;
+      --text-primary: #e0e0e0;
+      --text-secondary: #adb5bd;
+      --border-color: #404040;
+      --shadow: 0 2px 8px rgba(0,0,0,0.4);
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      margin: 0;
+      padding: 20px;
+      background: var(--bg-primary);
+      color: var(--text-primary);
+      transition: all 0.3s ease;
+    }
+
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 24px;
+      flex-wrap: wrap;
+      gap: 16px;
+    }
+
+    .header h1 {
+      margin: 0;
+      font-size: 1.5rem;
+      font-weight: 600;
+    }
+
+    .header-actions {
+      display: flex;
+      gap: 12px;
+      align-items: center;
+    }
+
+    .header-search {
+      flex: 1;
+      min-width: 240px;
+      position: relative;
+    }
+
+    .header-search input {
+      width: 100%;
+      padding: 10px 12px;
+      border: 1px solid var(--border-color);
+      border-radius: 999px;
+      background: var(--bg-secondary);
+      color: var(--text-primary);
+      font-size: 14px;
+    }
+
+    .nav-search-results {
+      position: absolute;
+      top: calc(100% + 6px);
+      left: 0;
+      right: 0;
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: 10px;
+      box-shadow: var(--shadow);
+      max-height: 260px;
+      overflow-y: auto;
+      z-index: 999;
+      display: none;
+    }
+
+    .nav-search-results.active { display: block; }
+
+    .nav-search-item {
+      padding: 10px 12px;
+      cursor: pointer;
+      font-size: 13px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+    }
+
+    .nav-search-item:hover,
+    .nav-search-item.active {
+      background: var(--bg-primary);
+    }
+
+    .nav-search-meta {
+      color: var(--text-secondary);
+      font-size: 11px;
+    }
+
+    .btn {
+      padding: 8px 16px;
+      border: none;
+      border-radius: var(--radius);
+      cursor: pointer;
+      font-size: 14px;
+      font-weight: 500;
+      transition: all 0.2s;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .btn-primary { background: var(--accent); color: white; }
+    .btn-primary:hover { background: var(--accent-hover); }
+    .btn-secondary { background: var(--bg-card); color: var(--text-primary); border: 1px solid var(--border-color); }
+    .btn-secondary:hover { background: var(--border-color); }
+    .btn-icon { padding: 8px 12px; }
+
+    .dark-mode-toggle {
+      background: none;
+      border: 1px solid var(--border-color);
+      padding: 8px 12px;
+      border-radius: var(--radius);
+      cursor: pointer;
+      color: var(--text-primary);
+      font-size: 18px;
+    }
+
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 16px;
+      margin-bottom: 24px;
+    }
+
+    .stat-card {
+      background: var(--bg-card);
+      padding: 20px;
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      border: 1px solid var(--border-color);
+    }
+
+    .stat-card .label {
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      color: var(--text-secondary);
+      margin-bottom: 8px;
+    }
+
+    .stat-card .value {
+      font-size: 28px;
+      font-weight: 700;
+      color: var(--text-primary);
+    }
+
+    .stat-card.critical .value { color: var(--critical); }
+    .stat-card.error .value { color: var(--error); }
+    .stat-card.warning .value { color: #e0a800; }
+    .stat-card.success .value { color: var(--success); }
+
+    .main-grid {
+      display: grid;
+      grid-template-columns: 280px 1fr;
+      gap: 24px;
+    }
+
+    @media (max-width: 900px) {
+      .main-grid { grid-template-columns: 1fr; }
+    }
+
+    .sidebar {
+      background: var(--bg-card);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      border: 1px solid var(--border-color);
+      padding: 20px;
+      height: fit-content;
+    }
+
+    .sidebar h3 {
+      margin: 0 0 16px;
+      font-size: 14px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      color: var(--text-secondary);
+    }
+
+    .threat-list {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+
+    .threat-item {
+      padding: 12px;
+      border-radius: 6px;
+      margin-bottom: 8px;
+      background: var(--bg-primary);
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .threat-item:hover {
+      transform: translateX(4px);
+    }
+
+    .threat-item .technique {
+      font-weight: 600;
+      font-size: 13px;
+      margin-bottom: 4px;
+    }
+
+    .threat-item .count {
+      font-size: 11px;
+      color: var(--text-secondary);
+    }
+
+    .threat-item.critical { border-left: 3px solid var(--critical); }
+    .threat-item.high { border-left: 3px solid var(--error); }
+    .threat-item.medium { border-left: 3px solid var(--warning); }
+
+    .host-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+      gap: 12px;
+      margin-top: 16px;
+    }
+
+    .host-card {
+      padding: 12px;
+      border-radius: 6px;
+      background: var(--bg-primary);
+      border: 1px solid var(--border-color);
+      cursor: pointer;
+      transition: all 0.2s;
+      text-align: center;
+    }
+
+    .host-card:hover {
+      border-color: var(--accent);
+      transform: translateY(-2px);
+    }
+
+    .host-card.active {
+      border-color: var(--accent);
+      background: rgba(13, 110, 253, 0.1);
+    }
+
+    .host-card .name {
+      font-weight: 600;
+      font-size: 13px;
+      margin-bottom: 6px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .host-card .stats {
+      font-size: 11px;
+      color: var(--text-secondary);
+    }
+
+    .host-card .badge {
+      display: inline-block;
+      padding: 2px 8px;
+      border-radius: 10px;
+      font-size: 10px;
+      font-weight: 600;
+      margin-top: 4px;
+    }
+
+    .badge-critical { background: var(--critical); color: white; }
+    .badge-error { background: var(--error); color: white; }
+    .badge-warning { background: var(--warning); color: #000; }
+    .badge-success { background: var(--success); color: white; }
+
+    .content-area {
+      background: var(--bg-card);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      border: 1px solid var(--border-color);
+      padding: 20px;
+    }
+
+    .filters-bar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-bottom: 20px;
+      padding-bottom: 16px;
+      border-bottom: 1px solid var(--border-color);
+    }
+
+    .filter-group {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .filter-group label {
+      font-size: 12px;
+      color: var(--text-secondary);
+      font-weight: 500;
+    }
+
+    select, input[type="text"] {
+      padding: 8px 12px;
+      border: 1px solid var(--border-color);
+      border-radius: 6px;
+      background: var(--bg-primary);
+      color: var(--text-primary);
+      font-size: 14px;
+    }
+
+    input[type="text"] { width: 200px; }
+    .header-search input { width: 100%; }
+
+    .severity-checkboxes {
+      display: flex;
+      gap: 12px;
+    }
+
+    .severity-checkboxes label {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      font-size: 12px;
+      cursor: pointer;
+    }
+
+    .severity-checkboxes input[type="checkbox"] {
+      accent-color: var(--accent);
+    }
+
+    .clear-filters {
+      margin-left: auto;
+      color: var(--accent);
+      background: none;
+      border: none;
+      cursor: pointer;
+      font-size: 13px;
+    }
+
+    .clear-filters:hover { text-decoration: underline; }
+
+    .tab-buttons {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 16px;
+    }
+
+    .tab-btn {
+      padding: 10px 20px;
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius);
+      background: var(--bg-primary);
+      color: var(--text-primary);
+      cursor: pointer;
+      font-weight: 500;
+      transition: all 0.2s;
+    }
+
+    .tab-btn.active {
+      background: var(--accent);
+      color: white;
+      border-color: var(--accent);
+    }
+
+    .vuln-panel {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: 20px;
+    }
+
+    .vuln-panel h2 {
+      margin: 0 0 8px;
+      font-size: 20px;
+    }
+
+    .vuln-panel p {
+      margin: 0 0 16px;
+      color: var(--text-secondary);
+      font-size: 14px;
+    }
+
+    .vuln-form {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 12px;
+      align-items: end;
+    }
+
+    .vuln-form label {
+      display: block;
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      color: var(--text-secondary);
+      margin-bottom: 6px;
+    }
+
+    .vuln-form input,
+    .vuln-form select {
+      width: 100%;
+      padding: 10px 12px;
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      background: var(--bg-secondary);
+      color: var(--text-primary);
+      font-size: 14px;
+    }
+
+    .vuln-status {
+      margin-top: 16px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      align-items: center;
+      font-size: 13px;
+    }
+
+    .status-pill {
+      padding: 6px 10px;
+      border-radius: 999px;
+      font-weight: 600;
+      background: var(--bg-primary);
+      border: 1px solid var(--border-color);
+    }
+
+    .status-pill.running { color: #0b5ed7; border-color: #0b5ed7; }
+    .status-pill.success { color: var(--success); border-color: var(--success); }
+    .status-pill.error { color: var(--error); border-color: var(--error); }
+
+    .scan-log {
+      margin-top: 16px;
+      padding: 12px;
+      border-radius: 8px;
+      border: 1px solid var(--border-color);
+      background: var(--bg-primary);
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+      font-size: 12px;
+      max-height: 220px;
+      overflow: auto;
+      white-space: pre-wrap;
+    }
+
+    .tab { display: none; }
+    .tab.active { display: block; }
+
+    .charts-container {
+      display: grid;
+      grid-template-columns: 2fr 1fr;
+      gap: 20px;
+      margin-bottom: 20px;
+    }
+
+    @media (max-width: 900px) {
+      .charts-container {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    #timeline {
+      overflow-x: auto;
+    }
+
+    #timeline svg {
+      background: var(--bg-card);
+      border-radius: var(--radius);
+    }
+
+    #severity-pie {
+      background: var(--bg-card);
+      border-radius: var(--radius);
+      border: 1px solid var(--border-color);
+      padding: 20px;
+      min-height: 300px;
+    }
+
+    #severity-pie svg {
+      display: block;
+      margin: 0 auto;
+    }
+
+    .pie-label {
+      font-size: 12px;
+      font-weight: 500;
+    }
+
+    .pie-legend {
+      margin-top: 15px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      justify-content: center;
+    }
+
+    .pie-legend-item {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      font-size: 12px;
+    }
+
+    .pie-legend-color {
+      width: 12px;
+      height: 12px;
+      border-radius: 2px;
+    }
+
+    .tooltip {
+      position: absolute;
+      text-align: left;
+      width: auto;
+      max-width: 450px;
+      padding: 12px;
+      font-size: 13px;
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius);
+      pointer-events: none;
+      box-shadow: var(--shadow);
+      z-index: 1000;
+    }
+
+    .actions-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin: 16px 0;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    .action-group {
+      display: flex;
+      gap: 8px;
+    }
+
+    table.dataTable {
+      background: var(--bg-card);
+      color: var(--text-primary);
+      border-radius: var(--radius);
+      overflow: hidden;
+    }
+
+    table.dataTable thead th {
+      background: var(--bg-primary);
+      border-bottom: 2px solid var(--border-color);
+      padding: 12px;
+      font-weight: 600;
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    table.dataTable tbody td {
+      padding: 10px 12px;
+      border-bottom: 1px solid var(--border-color);
+      vertical-align: top;
+    }
+
+    table.dataTable tbody tr:hover {
+      background: var(--bg-primary);
+    }
+
+    .severity-badge {
+      display: inline-block;
+      padding: 3px 10px;
+      border-radius: 12px;
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+    }
+
+    .severity-badge.critical { background: var(--critical); color: white; }
+    .severity-badge.error { background: var(--error); color: white; }
+    .severity-badge.warning { background: var(--warning); color: #000; }
+    .severity-badge.info { background: var(--info); color: #000; }
+
+    .mitre-tag {
+      display: inline-block;
+      padding: 2px 8px;
+      background: rgba(13, 110, 253, 0.15);
+      color: var(--accent);
+      border-radius: 4px;
+      font-size: 11px;
+      font-weight: 500;
+      margin: 2px;
+      cursor: pointer;
+    }
+
+    .mitre-tag:hover {
+      background: rgba(13, 110, 253, 0.25);
+    }
+
+    .detail-row {
+      display: none;
+      background: var(--bg-primary);
+      padding: 16px;
+    }
+
+    .detail-row.open {
+      display: table-row;
+    }
+
+    .detail-content {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 16px;
+      padding: 12px 0;
+    }
+
+    .detail-item {
+      padding: 12px;
+      background: var(--bg-card);
+      border-radius: 6px;
+    }
+
+    .detail-item .label {
+      font-size: 11px;
+      text-transform: uppercase;
+      color: var(--text-secondary);
+      margin-bottom: 4px;
+    }
+
+    .detail-item .value {
+      font-size: 13px;
+      word-break: break-word;
+    }
+
+    .hash-display {
+      font-family: monospace;
+      font-size: 11px;
+      background: var(--bg-primary);
+      padding: 4px 8px;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+
+    .hash-display:hover {
+      background: var(--border-color);
+    }
+
+    .fim-change {
+      display: inline-block;
+      padding: 3px 10px;
+      border-radius: 12px;
+      font-size: 11px;
+      font-weight: 600;
+    }
+
+    .fim-change.created { background: var(--success); color: white; }
+    .fim-change.modified { background: var(--warning); color: #000; }
+    .fim-change.deleted { background: var(--error); color: white; }
+
+    .compliance-badge {
+      display: inline-block;
+      padding: 2px 8px;
+      border-radius: 4px;
+      font-size: 11px;
+      font-weight: 600;
+      margin-right: 4px;
+    }
+    .compliance-badge.compliance-pci_dss { background: #e74c3c; color: white; }
+    .compliance-badge.compliance-gdpr { background: #3498db; color: white; }
+    .compliance-badge.compliance-hipaa { background: #9b59b6; color: white; }
+    .compliance-badge.compliance-soc2 { background: #f39c12; color: white; }
+    .compliance-badge.compliance-nist { background: #1abc9c; color: white; }
+    .compliance-badge.compliance-iso_27001 { background: #e91e63; color: white; }
+
+    .compliance-stats {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin: 15px 0;
+    }
+    .compliance-stat {
+      padding: 10px 20px;
+      border-radius: 8px;
+      text-align: center;
+    }
+    .compliance-stat.pci_dss { background: rgba(231, 76, 60, 0.2); border-left: 4px solid #e74c3c; }
+    .compliance-stat.gdpr { background: rgba(52, 152, 219, 0.2); border-left: 4px solid #3498db; }
+    .compliance-stat.hipaa { background: rgba(155, 89, 182, 0.2); border-left: 4px solid #9b59b6; }
+    .compliance-stat.soc2 { background: rgba(243, 156, 18, 0.2); border-left: 4px solid #f39c12; }
+    .compliance-stat.nist { background: rgba(26, 188, 156, 0.2); border-left: 4px solid #1abc9c; }
+    .compliance-stat.iso_27001 { background: rgba(233, 30, 99, 0.2); border-left: 4px solid #e91e63; }
+    .compliance-stat .count { font-size: 24px; font-weight: bold; }
+    .compliance-stat .label { font-size: 12px; color: var(--text-secondary); }
+
+    .compliance-filter {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 15px;
+      flex-wrap: wrap;
+    }
+    .compliance-filter .btn { font-size: 12px; padding: 6px 12px; }
+
+    .network-stats {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin: 15px 0;
+    }
+    .network-stat {
+      padding: 10px 20px;
+      border-radius: 8px;
+      text-align: center;
+      background: var(--bg-card);
+    }
+    .network-stat .count { font-size: 24px; font-weight: bold; }
+    .network-stat .label { font-size: 12px; color: var(--text-secondary); }
+
+    .network-filter {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 15px;
+      flex-wrap: wrap;
+    }
+    .network-filter .btn { font-size: 12px; padding: 6px 12px; }
+
+    .additional-sources-header { margin-bottom: 20px; }
+    .additional-sources-header h2 { margin: 0 0 5px 0; }
+    .additional-sources-header p { margin: 0; color: var(--text-secondary); }
+
+    .source-selector {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 20px;
+      flex-wrap: wrap;
+    }
+    .source-btn {
+      padding: 10px 20px;
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius);
+      background: var(--bg-card);
+      color: var(--text-primary);
+      cursor: pointer;
+      font-size: 14px;
+      font-weight: 500;
+      transition: all 0.2s;
+    }
+    .source-btn:hover { background: var(--border-color); }
+    .source-btn.active { background: var(--accent); color: white; border-color: var(--accent); }
+
+    .source-content { display: none; }
+    .source-content.active { display: block; }
+
+    .source-stats {
+      display: flex;
+      gap: 20px;
+      margin-bottom: 15px;
+      flex-wrap: wrap;
+    }
+    .source-stat {
+      background: var(--bg-card);
+      padding: 10px 15px;
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+    }
+    .source-stat .value { font-size: 20px; font-weight: 600; }
+    .source-stat .label { font-size: 12px; color: var(--text-secondary); }
+
+    .severity-critical { background: #9c27b0; color: white; padding: 2px 8px; border-radius: 4px; }
+    .severity-high { background: #dc3545; color: white; padding: 2px 8px; border-radius: 4px; }
+    .severity-medium { background: #ffc107; color: black; padding: 2px 8px; border-radius: 4px; }
+    .severity-low { background: #198754; color: white; padding: 2px 8px; border-radius: 4px; }
+
+    .log-type-firewall { background: #0dcaf0; color: black; padding: 2px 8px; border-radius: 4px; }
+    .log-type-ids { background: #dc3545; color: white; padding: 2px 8px; border-radius: 4px; }
+
+    .realtime-indicator {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 12px;
+      color: var(--text-secondary);
+    }
+
+    .pulse {
+      width: 8px;
+      height: 8px;
+      background: var(--success);
+      border-radius: 50%;
+      animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.5; transform: scale(1.2); }
+    }
+
+    .dataTables_wrapper .dataTables_length,
+    .dataTables_wrapper .dataTables_filter,
+    .dataTables_wrapper .dataTables_info,
+    .dataTables_wrapper .dataTables_paginate {
+      color: var(--text-primary);
+    }
+
+    .dataTables_wrapper .page-item.active .page-link {
+      background: var(--accent);
+      border-color: var(--accent);
+    }
+
+    .empty-state {
+      text-align: center;
+      padding: 60px 20px;
+      color: var(--text-secondary);
+    }
+
+    .empty-state svg {
+      width: 64px;
+      height: 64px;
+      margin-bottom: 16px;
+      opacity: 0.5;
+    }
+
+    .actions-bar button {
+      padding: 6px 12px;
+      font-size: 12px;
+    }
+
+    /* Professional GeoIP Map Styles */
+    #geoipMap {
+      height: 500px;
+      width: 100%;
+      border-radius: var(--radius);
+      box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+      border: 2px solid var(--border-color);
+      background: var(--bg-secondary);
+    }
+
+    .geoip-header {
+      margin-bottom: 24px;
+      padding-bottom: 16px;
+      border-bottom: 2px solid var(--border-color);
+    }
+
+    .geoip-header h2 {
+      margin: 0;
+      font-size: 24px;
+      font-weight: 700;
+      color: var(--text-primary);
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .geoip-header p {
+      margin: 8px 0 0 0;
+      font-size: 14px;
+      color: var(--text-secondary);
+    }
+
+    .geoip-stats {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 20px;
+      margin-bottom: 28px;
+    }
+
+    .geoip-stat-card {
+      background: linear-gradient(135deg, var(--bg-primary) 0%, var(--bg-secondary) 100%);
+      padding: 24px;
+      border-radius: 12px;
+      border: 1px solid var(--border-color);
+      box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+      transition: all 0.3s ease;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .geoip-stat-card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 25px rgba(0,0,0,0.12);
+      border-color: var(--accent);
+    }
+
+    .geoip-stat-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 4px;
+      background: linear-gradient(90deg, var(--accent), var(--info));
+      opacity: 0.8;
+    }
+
+    .geoip-stat-card .stat-icon {
+      width: 48px;
+      height: 48px;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 16px;
+      font-size: 24px;
+      background: rgba(13, 110, 253, 0.1);
+      color: var(--accent);
+    }
+
+    .geoip-stat-card:nth-child(2) .stat-icon {
+      background: rgba(25, 135, 84, 0.1);
+      color: var(--success);
+    }
+
+    .geoip-stat-card:nth-child(3) .stat-icon {
+      background: rgba(220, 53, 69, 0.1);
+      color: var(--error);
+    }
+
+    .geoip-stat-card .label {
+      font-size: 12px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      color: var(--text-secondary);
+      margin-bottom: 8px;
+    }
+
+    .geoip-stat-card .value {
+      font-size: 32px;
+      font-weight: 700;
+      color: var(--text-primary);
+      line-height: 1.2;
+    }
+
+    .country-list {
+      height: 500px;
+      overflow-y: auto;
+      background: var(--bg-primary);
+      border-radius: 12px;
+      padding: 0;
+      border: 1px solid var(--border-color);
+      box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+    }
+
+    .country-list-header {
+      padding: 16px 20px;
+      background: var(--bg-secondary);
+      border-bottom: 2px solid var(--border-color);
+      font-size: 14px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      color: var(--text-secondary);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .country-list-content {
+      padding: 8px;
+    }
+
+    .country-item {
+      display: flex;
+      flex-direction: column;
+      padding: 16px;
+      border-bottom: 1px solid var(--border-color);
+      transition: all 0.2s ease;
+      cursor: pointer;
+    }
+
+    .country-item:hover {
+      background: rgba(13, 110, 253, 0.05);
+      border-radius: 8px;
+    }
+
+    .country-item:last-child {
+      border-bottom: none;
+    }
+
+    .country-rank {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      font-size: 12px;
+      font-weight: 700;
+      margin-right: 12px;
+      background: var(--bg-secondary);
+      color: var(--text-secondary);
+      border: 2px solid var(--border-color);
+    }
+
+    .country-rank.top-3 {
+      background: linear-gradient(135deg, #ffd700, #ffed4e);
+      color: #333;
+      border-color: #ffc107;
+    }
+
+    .country-info {
+      display: flex;
+      align-items: center;
+      margin-bottom: 10px;
+    }
+
+    .country-name {
+      flex: 1;
+      font-weight: 600;
+      font-size: 15px;
+      color: var(--text-primary);
+    }
+
+    .country-count {
+      background: linear-gradient(135deg, var(--error), #c82333);
+      color: white;
+      padding: 4px 12px;
+      border-radius: 20px;
+      font-size: 13px;
+      font-weight: 600;
+      box-shadow: 0 2px 4px rgba(220, 53, 69, 0.3);
+    }
+
+    .country-progress {
+      width: 100%;
+      height: 6px;
+      background: var(--bg-secondary);
+      border-radius: 3px;
+      overflow: hidden;
+      margin-top: 4px;
+    }
+
+    .country-progress-bar {
+      height: 100%;
+      background: linear-gradient(90deg, var(--error), #ff6b6b);
+      border-radius: 3px;
+      transition: width 0.5s ease;
+    }
+
+    /* Custom Leaflet markers */
+    .custom-marker {
+      background: linear-gradient(135deg, #dc3545, #c82333);
+      border: 3px solid white;
+      border-radius: 50%;
+      box-shadow: 0 4px 12px rgba(220, 53, 69, 0.4);
+      transition: transform 0.2s ease;
+    }
+
+    .custom-marker:hover {
+      transform: scale(1.2);
+    }
+
+    .custom-marker::after {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 10px;
+      height: 10px;
+      background: white;
+      border-radius: 50%;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+    }
+
+    /* Loading animation */
+    .geoip-loading-spinner {
+      display: inline-block;
+      width: 40px;
+      height: 40px;
+      border: 4px solid var(--border-color);
+      border-top: 4px solid var(--accent);
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+      margin: 20px auto;
+    }
+
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    /* No data message */
+    .geoip-no-data {
+      text-align: center;
+      padding: 60px 20px;
+      color: var(--text-secondary);
+    }
+
+    .geoip-no-data h3 {
+      font-size: 20px;
+      margin-bottom: 12px;
+      color: var(--text-primary);
+    }
+
+    .geoip-no-data p {
+      font-size: 14px;
+      margin: 8px 0;
+    }
+
+    .leaflet-popup-content {
+      font-family: inherit;
+      font-size: 13px;
+    }
+
+    .leaflet-popup-content h4 {
+      margin: 0 0 8px 0;
+      font-size: 14px;
+      color: var(--text-primary);
+    }
+
+    .leaflet-popup-content p {
+      margin: 4px 0;
+      color: var(--text-secondary);
+    }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <div>
+      <h1>🛡️ AstroSIEM</h1>
+      <div class="realtime-indicator">
+        <div class="pulse"></div>
+        <span>Live</span>
+        <span id="lastUpdated">Last updated: --</span>
+      </div>
+    </div>
+    <div class="header-search">
+      <input type="text" id="navSearchInput" placeholder="Search dashboard sections (e.g., GeoIP, FIM, Apache)">
+      <div class="nav-search-results" id="navSearchResults"></div>
+    </div>
+    <div class="header-actions">
+      <button class="btn btn-secondary" id="refreshBtn">🔄 Refresh</button>
+      <button class="dark-mode-toggle" id="darkModeToggle">🌙</button>
+      <button class="btn" id="logoutBtn" style="background: #dc3545; color: white;">🚪 Logout</button>
+    </div>
+  </div>
+
+  <div class="stats-grid" id="statsGrid">
+    <div class="stat-card">
+      <div class="label">Total Events</div>
+      <div class="value" id="statTotal">0</div>
+    </div>
+    <div class="stat-card critical">
+      <div class="label">Critical</div>
+      <div class="value" id="statCritical">0</div>
+    </div>
+    <div class="stat-card error">
+      <div class="label">Errors</div>
+      <div class="value" id="statError">0</div>
+    </div>
+    <div class="stat-card warning">
+      <div class="label">Warnings</div>
+      <div class="value" id="statWarning">0</div>
+    </div>
+    <div class="stat-card success">
+      <div class="label">Hosts</div>
+      <div class="value" id="statHosts">0</div>
+    </div>
+  </div>
+
+  <div class="main-grid">
+    <aside class="sidebar">
+      <h3 id="threatsSection">🎯 Top Detected Threats</h3>
+      <ul class="threat-list" id="threatList">
+        <li class="threat-item">
+          <div class="technique">Loading...</div>
+        </li>
+      </ul>
+
+      <h3 id="hostSummarySection" style="margin-top: 24px;">🖥️ Host Summary</h3>
+      <div class="host-grid" id="hostGrid"></div>
+    </aside>
+
+    <main class="content-area">
+      <div class="tab-buttons">
+        <button class="tab-btn active" data-tab="timelineTab" onclick="showTab('timelineTab', this)">🔍 Timeline Logs</button>
+        <button class="tab-btn" data-tab="geoipTab" onclick="showTab('geoipTab', this)">🌍 GeoIP Map</button>
+        <button class="tab-btn" data-tab="fimTab" onclick="showTab('fimTab', this)">📁 FIM Events</button>
+        <button class="tab-btn" data-tab="complianceTab" onclick="showTab('complianceTab', this)">📋 Compliance</button>
+        <button class="tab-btn" data-tab="networkTab" onclick="showTab('networkTab', this)">🌐 Network</button>
+        <button class="tab-btn" data-tab="additionalTab" onclick="showTab('additionalTab', this)">📦 Additional Sources</button>
+        <button class="tab-btn" data-tab="vulnScanTab" onclick="showTab('vulnScanTab', this)">🧯 Vulnerability Scan</button>
+      </div>
+
+      <div class="filters-bar" id="filterBar">
+        <div class="filter-group">
+          <label>Search:</label>
+          <input type="text" id="searchInput" placeholder="Search messages...">
+        </div>
+        <div class="filter-group">
+          <label>Host:</label>
+          <select id="hostFilter"></select>
+        </div>
+        <div class="filter-group">
+          <label><input type="checkbox" id="newestFilter" checked> Newest</label>
+        </div>
+        <div class="severity-checkboxes">
+          <label><input type="checkbox" checked value="critical"> Critical</label>
+          <label><input type="checkbox" checked value="error"> Error</label>
+          <label><input type="checkbox" checked value="warning"> Warning</label>
+          <label><input type="checkbox" checked value="info"> Info</label>
+        </div>
+        <button class="clear-filters" id="clearFilters">Clear filters</button>
+      </div>
+
+      <div id="timelineTab" class="tab active">
+        <div class="charts-container">
+          <div id="timeline"></div>
+          <div id="severity-pie">
+            <h3 style="margin: 0 0 15px 0; font-size: 14px; text-transform: uppercase; color: var(--text-secondary);">Severity Distribution</h3>
+          </div>
+        </div>
+        <div class="actions-bar">
+          <span id="timelineCount">Showing 0 events</span>
+          <div class="action-group">
+            <button class="btn btn-secondary" id="downloadLogsCsv">📥 Download CSV</button>
+          </div>
+        </div>
+        <table id="logs-table" style="width:100%">
+          <thead>
+            <tr>
+              <th>Time</th>
+              <th>Host</th>
+              <th>Process</th>
+              <th>Message</th>
+              <th>Severity</th>
+              <th>MITRE</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </div>
+
+      <div id="geoipTab" class="tab">
+        <div id="geoipLoading" class="geoip-no-data">
+          <div class="geoip-loading-spinner"></div>
+          <h3>Loading GeoIP Data</h3>
+          <p>Fetching geographic location data for attack sources</p>
+        </div>
+        
+        <div id="geoipContent" style="display: none;">
+          <div class="geoip-header">
+            <h2>Global Threat Intelligence</h2>
+            <p>Geographic distribution of security events and attack origins</p>
+          </div>
+
+          <div class="geoip-stats">
+            <div class="geoip-stat-card">
+              <div class="stat-icon">IP</div>
+              <div class="label">Total Unique IPs</div>
+              <div class="value" id="geoipTotalIps">0</div>
+            </div>
+            <div class="geoip-stat-card">
+              <div class="stat-icon">CN</div>
+              <div class="label">Countries</div>
+              <div class="value" id="geoipCountries">0</div>
+            </div>
+            <div class="geoip-stat-card">
+              <div class="stat-icon">LOC</div>
+              <div class="label">Unique Locations</div>
+              <div class="value" id="geoipLocations">0</div>
+            </div>
+            <div class="geoip-stat-card">
+              <div class="stat-icon">#1</div>
+              <div class="label">Top Attacking Country</div>
+              <div class="value" id="geoipTopCountry" style="font-size: 20px;">-</div>
+            </div>
+          </div>
+          
+          <div class="charts-container">
+            <div style="flex: 2;">
+              <div id="geoipMap"></div>
+            </div>
+            <div style="flex: 1;">
+              <div class="country-list">
+                <div class="country-list-header">
+                  <span>Rank</span>
+                  <span>Attacks</span>
+                </div>
+                <div class="country-list-content" id="geoipCountryList">
+                  <p style="color: var(--text-secondary); text-align: center; padding: 20px;">Loading...</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div id="fimTab" class="tab">
+        <div class="actions-bar">
+          <span id="fimCount">Showing 0 FIM events</span>
+          <div class="action-group">
+            <button class="btn btn-secondary" id="downloadFimCsv">📥 Download CSV</button>
+          </div>
+        </div>
+        <table id="fim-table" style="width:100%">
+          <thead>
+            <tr>
+              <th>Time</th>
+              <th>Host</th>
+              <th>File Path</th>
+              <th>Change</th>
+              <th>Hash</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </div>
+
+      <div id="complianceTab" class="tab">
+        <div class="charts-container">
+          <div id="compliance-pie"></div>
+        </div>
+        <div class="compliance-stats" id="complianceStats"></div>
+        <div class="actions-bar">
+          <span id="complianceCount">Showing 0 compliance events</span>
+          <div class="action-group">
+            <button class="btn btn-secondary" id="downloadComplianceCsv">📥 Download CSV</button>
+          </div>
+        </div>
+        <div class="compliance-filter" id="complianceFilter">
+          <button class="btn btn-primary" data-framework="all">All</button>
+          <button class="btn btn-secondary" data-framework="PCI_DSS">PCI-DSS</button>
+          <button class="btn btn-secondary" data-framework="GDPR">GDPR</button>
+          <button class="btn btn-secondary" data-framework="HIPAA">HIPAA</button>
+          <button class="btn btn-secondary" data-framework="SOC2">SOC 2</button>
+          <button class="btn btn-secondary" data-framework="NIST">NIST</button>
+          <button class="btn btn-secondary" data-framework="ISO_27001">ISO 27001</button>
+        </div>
+        <table id="compliance-table" style="width:100%">
+          <thead>
+            <tr>
+              <th>Time</th>
+              <th>Host</th>
+              <th>Process</th>
+              <th>Message</th>
+              <th>Compliance</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </div>
+
+      <div id="networkTab" class="tab">
+        <div class="charts-container">
+          <div id="network-attackers"></div>
+          <div id="network-pie"></div>
+        </div>
+        <div class="network-stats" id="networkStats"></div>
+        <div class="actions-bar">
+          <span id="networkCount">Showing 0 network events</span>
+          <div class="action-group">
+            <button class="btn btn-secondary" id="downloadNetworkCsv">📥 Download CSV</button>
+          </div>
+        </div>
+        <div class="network-filter" id="networkFilter">
+          <button class="btn btn-primary" data-type="all">All</button>
+          <button class="btn btn-secondary" data-type="firewall">Firewall</button>
+          <button class="btn btn-secondary" data-type="ids">IDS Alerts</button>
+        </div>
+        <table id="network-table" style="width:100%">
+          <thead>
+            <tr>
+              <th>Time</th>
+              <th>Host</th>
+              <th>Type</th>
+              <th>Source IP</th>
+              <th>Dest IP</th>
+              <th>Port</th>
+              <th>Action</th>
+              <th>Description</th>
+              <th>Severity</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </div>
+
+      <div id="vulnScanTab" class="tab">
+        <div class="vuln-panel">
+          <h2>Vulnerability Scan</h2>
+          <p>Trigger an on-demand scan on a selected Linux agent. Configure the trigger endpoint used by your agent tooling.</p>
+          <div class="vuln-form">
+            <div>
+              <label for="vulnHostSelect">Target Host</label>
+              <select id="vulnHostSelect">
+                <option value="">Loading agents...</option>
+              </select>
+            </div>
+            <div>
+              <label for="vulnEndpointPath">Trigger Path</label>
+              <input id="vulnEndpointPath" type="text" value="/vuln-scan/trigger" />
+            </div>
+            <div>
+              <label for="vulnEndpointMethod">HTTP Method</label>
+              <select id="vulnEndpointMethod">
+                <option value="POST">POST</option>
+                <option value="GET">GET</option>
+              </select>
+            </div>
+            <div>
+              <label for="vulnEndpointUrl">Full Override URL (optional)</label>
+              <input id="vulnEndpointUrl" type="text" placeholder="http://192.168.1.10/vuln-scan/trigger" />
+            </div>
+            <div>
+              <button class="btn btn-primary" id="runVulnScanBtn">🚀 Run Scan</button>
+            </div>
+          </div>
+          <div class="vuln-status">
+            <span class="status-pill" id="vulnStatusPill">Idle</span>
+            <span id="vulnStatusText">Select a host to begin.</span>
+          </div>
+          <div class="scan-log" id="vulnScanLog">Waiting for a scan to run...</div>
+        </div>
+      </div>
+
+      <div id="additionalTab" class="tab">
+        <div class="additional-sources-header">
+          <h2>Additional Sources</h2>
+          <p>Apache, Nginx, Docker, and Kubernetes log analysis</p>
+        </div>
+        <div class="source-selector">
+          <button class="source-btn active" data-source="apache" onclick="showAdditionalSource('apache')">🟢 Apache</button>
+          <button class="source-btn" data-source="nginx" onclick="showAdditionalSource('nginx')">🟢 Nginx</button>
+          <button class="source-btn" data-source="docker" onclick="showAdditionalSource('docker')">🐳 Docker</button>
+          <button class="source-btn" data-source="kubernetes" onclick="showAdditionalSource('kubernetes')">☸ Kubernetes</button>
+        </div>
+        
+        <div id="apacheSource" class="source-content active">
+          <div class="charts-container">
+            <div id="apache-attackers"></div>
+            <div id="apache-pie"></div>
+          </div>
+          <div class="source-stats" id="apacheStats"></div>
+          <div class="actions-bar">
+            <span id="apacheCount">Showing 0 Apache events</span>
+            <div class="action-group">
+              <button class="btn btn-secondary" id="downloadApacheCsv">📥 Download CSV</button>
+            </div>
+          </div>
+          <table id="apache-table" style="width:100%">
+            <thead>
+              <tr>
+                <th>Time</th>
+                <th>Host</th>
+                <th>Type</th>
+                <th>Source IP</th>
+                <th>URL</th>
+                <th>Status</th>
+                <th>Description</th>
+                <th>Severity</th>
+              </tr>
+            </thead>
+            <tbody></tbody>
+          </table>
+        </div>
+        
+        <div id="nginxSource" class="source-content">
+          <div class="charts-container">
+            <div id="nginx-attackers"></div>
+            <div id="nginx-pie"></div>
+          </div>
+          <div class="source-stats" id="nginxStats"></div>
+          <div class="actions-bar">
+            <span id="nginxCount">Showing 0 Nginx events</span>
+            <div class="action-group">
+              <button class="btn btn-secondary" id="downloadNginxCsv">📥 Download CSV</button>
+            </div>
+          </div>
+          <table id="nginx-table" style="width:100%">
+            <thead>
+              <tr>
+                <th>Time</th>
+                <th>Host</th>
+                <th>Type</th>
+                <th>Source IP</th>
+                <th>URL</th>
+                <th>Status</th>
+                <th>Description</th>
+                <th>Severity</th>
+              </tr>
+            </thead>
+            <tbody></tbody>
+          </table>
+        </div>
+        
+        <div id="dockerSource" class="source-content">
+          <div class="charts-container">
+            <div id="docker-containers"></div>
+            <div id="docker-pie"></div>
+          </div>
+          <div class="source-stats" id="dockerStats"></div>
+          <div class="actions-bar">
+            <span id="dockerCount">Showing 0 Docker events</span>
+            <div class="action-group">
+              <button class="btn btn-secondary" id="downloadDockerCsv">📥 Download CSV</button>
+            </div>
+          </div>
+          <table id="docker-table" style="width:100%">
+            <thead>
+              <tr>
+                <th>Time</th>
+                <th>Host</th>
+                <th>Type</th>
+                <th>Container</th>
+                <th>Image</th>
+                <th>Description</th>
+                <th>Severity</th>
+              </tr>
+            </thead>
+            <tbody></tbody>
+          </table>
+        </div>
+        
+        <div id="kubernetesSource" class="source-content">
+          <div class="charts-container">
+            <div id="k8s-namespaces"></div>
+            <div id="k8s-pie"></div>
+          </div>
+          <div class="source-stats" id="k8sStats"></div>
+          <div class="actions-bar">
+            <span id="k8sCount">Showing 0 Kubernetes events</span>
+            <div class="action-group">
+              <button class="btn btn-secondary" id="downloadK8sCsv">📥 Download CSV</button>
+            </div>
+          </div>
+          <table id="kubernetes-table" style="width:100%">
+            <thead>
+              <tr>
+                <th>Time</th>
+                <th>Host</th>
+                <th>Type</th>
+                <th>Namespace</th>
+                <th>Pod</th>
+                <th>Description</th>
+                <th>Severity</th>
+              </tr>
+            </thead>
+            <tbody></tbody>
+          </table>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <script>
+    // Authentication check - require login on every page load
+    if (!AstroSIEMAuth.requireAuth()) {
+      // Will redirect to login.html
+    }
+
+    // Flag to track if GeoIP map has been initialized
+    let geoipMapInitialized = false;
+
+    function showTab(id, triggerEl) {
+      document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+      document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+      document.getElementById(id).classList.add('active');
+      const targetBtn = triggerEl || document.querySelector(`.tab-btn[data-tab="${id}"]`);
+      if (targetBtn) {
+        targetBtn.classList.add('active');
+      }
+      
+      // Initialize GeoIP map when tab is first shown
+      if (id === 'geoipTab' && !geoipMapInitialized && geoipData) {
+        setTimeout(() => {
+          initGeoIPMap();
+          geoipMapInitialized = true;
+        }, 50);
+      }
+    }
+
+    const toggleBtn = document.getElementById('darkModeToggle');
+    function setDarkMode(enabled) {
+      document.body.classList.toggle('dark', enabled);
+      localStorage.setItem('darkMode', enabled ? 'true' : 'false');
+      localStorage.setItem('theme', enabled ? 'dark' : 'light');
+      toggleBtn.textContent = enabled ? '☀ Light Mode' : '🌙 Dark Mode';
+    }
+    const savedDarkMode = localStorage.getItem('darkMode');
+    const savedTheme = localStorage.getItem('theme');
+    const defaultDarkMode = savedDarkMode !== null
+      ? savedDarkMode === 'true'
+      : (savedTheme ? savedTheme === 'dark' : true);
+    setDarkMode(defaultDarkMode);
+    toggleBtn.addEventListener('click', () => setDarkMode(!document.body.classList.contains('dark')));
+
+    // Logout button handler
+    document.getElementById('logoutBtn').addEventListener('click', () => AstroSIEMAuth.logout());
+
+    // Refresh button - reload data without logging out
+    document.getElementById('refreshBtn').addEventListener('click', () => {
+      // Reload just the visualization data
+      if (typeof loadVisualizations === 'function') {
+        loadVisualizations();
+      }
+      // Reload GeoIP data
+      if (typeof loadGeoIPData === 'function') {
+        loadGeoIPData();
+      }
+      // Update last updated time
+      document.getElementById('lastUpdated').textContent = 'Last updated: ' + new Date().toLocaleTimeString();
+    });
+
+    // GeoIP Map Variables
+    let geoipMap = null;
+    let geoipHeatLayer = null;
+    let geoipMarkers = [];
+    let geoipData = null;
+
+    // Load GeoIP data and initialize map
+    async function loadGeoIPData() {
+      try {
+        console.log('Fetching GeoIP data...');
+        const response = await fetch('geoip-map-data.json');
+        if (!response.ok) {
+          console.error('Failed to load GeoIP data:', response.status, response.statusText);
+          showGeoIPError('Failed to load GeoIP data. Status: ' + response.status);
+          return;
+        }
+        
+        geoipData = await response.json();
+        console.log('GeoIP data loaded successfully:', geoipData.summary);
+        
+        // Hide loading, show content
+        document.getElementById('geoipLoading').style.display = 'none';
+        document.getElementById('geoipContent').style.display = 'block';
+        
+        // Update statistics
+        if (geoipData.summary) {
+          document.getElementById('geoipTotalIps').textContent = geoipData.summary.events_with_geoip || 0;
+          document.getElementById('geoipCountries').textContent = geoipData.summary.unique_countries || 0;
+          document.getElementById('geoipLocations').textContent = geoipData.summary.unique_cities || 0;
+          
+          if (geoipData.summary.top_countries && geoipData.summary.top_countries.length > 0) {
+            document.getElementById('geoipTopCountry').textContent = geoipData.summary.top_countries[0].country;
+          }
+          
+          // Update country list
+          updateCountryList(geoipData.summary.top_countries || []);
+        }
+        
+        // If GeoIP tab is already active, initialize map immediately
+        if (document.getElementById('geoipTab').classList.contains('active') && !geoipMapInitialized) {
+          setTimeout(() => {
+            initGeoIPMap();
+            geoipMapInitialized = true;
+          }, 100);
+        }
+        
+        console.log('GeoIP data ready. Click the GeoIP Map tab to view the world map.');
+      } catch (error) {
+        console.error('Error loading GeoIP data:', error);
+        showGeoIPError('Error loading GeoIP data: ' + error.message);
+      }
+    }
+    
+    function showGeoIPError(message) {
+      document.getElementById('geoipLoading').innerHTML = 
+        '<h3>❌ Error Loading GeoIP Data</h3>' +
+        '<p>' + message + '</p>' +
+        '<p style="font-size: 12px; margin-top: 20px;">Make sure geoip-map-data.json exists in the dashboard directory</p>';
+    }
+
+    function updateCountryList(topCountries) {
+      const listContainer = document.getElementById('geoipCountryList');
+      
+      if (topCountries.length === 0) {
+        listContainer.innerHTML = '<p style="color: var(--text-secondary); text-align: center; padding: 20px;">No GeoIP data available</p>';
+        return;
+      }
+      
+      listContainer.innerHTML = topCountries.map((country, index) => `
+        <div class="country-item">
+          <div class="country-name">
+            <span style="font-weight: 600; color: var(--text-primary);">${index + 1}.</span>
+            <span>${country.country}</span>
+          </div>
+          <span class="country-count">${country.count}</span>
+        </div>
+      `).join('');
+    }
+
+    function initGeoIPMap(selectedHost = 'all') {
+      if (!geoipData || !geoipData.logs) {
+        console.error('No GeoIP data available');
+        return;
+      }
+      
+      console.log('Initializing GeoIP map for host:', selectedHost);
+      
+      // Filter logs with GeoIP data
+      let logsWithGeo = geoipData.logs.filter(log => log.geoip && log.geoip.latitude && log.geoip.longitude);
+      
+      // Filter by host if specific host selected
+      if (selectedHost !== 'all') {
+        logsWithGeo = logsWithGeo.filter(log => {
+          // Match hostname from the log (e.g., 'raw-ubuntu-auth' matches 'debian')
+          const logHostname = log.hostname.toLowerCase();
+          return logHostname.includes(selectedHost.toLowerCase());
+        });
+        console.log(`Filtered to ${logsWithGeo.length} logs for host: ${selectedHost}`);
+      }
+      
+      console.log(`Found ${logsWithGeo.length} logs with GeoIP data`);
+      
+      if (logsWithGeo.length === 0) {
+        document.getElementById('geoipMap').innerHTML = 
+          '<div style="padding: 40px; text-align: center; color: var(--text-secondary);">' +
+          '<h3>No geographic data available</h3>' +
+          '<p>' + (selectedHost !== 'all' ? `No IP addresses with location data found for ${selectedHost}` : 'No IP addresses with location data found in logs') + '</p>' +
+          (selectedHost === 'all' ? '<p>Run: python3 parsers/generate-geoip-sample.py</p>' : '') +
+          '</div>';
+        
+        // Clear statistics for no data
+        document.getElementById('geoipTotalIps').textContent = '0';
+        document.getElementById('geoipCountries').textContent = '0';
+        document.getElementById('geoipLocations').textContent = '0';
+        document.getElementById('geoipTopCountry').textContent = '-';
+        document.getElementById('geoipCountryList').innerHTML = '<p style="color: var(--text-secondary); text-align: center; padding: 20px;">No data for selected host</p>';
+        return;
+      }
+      
+      // Aggregate attacks by location for heatmap
+      const heatData = [];
+      const markers = [];
+      const locationMap = new Map();
+      
+      logsWithGeo.forEach(log => {
+        const geo = log.geoip;
+        const key = `${geo.latitude},${geo.longitude}`;
+        
+        if (!locationMap.has(key)) {
+          locationMap.set(key, {
+            lat: geo.latitude,
+            lng: geo.longitude,
+            country: geo.country,
+            city: geo.city,
+            ip: log.source_ip,
+            count: 0,
+            events: []
+          });
+        }
+        
+        const loc = locationMap.get(key);
+        loc.count++;
+        loc.events.push({
+          timestamp: log.timestamp_utc,
+          message: log.message,
+          process: log.process
+        });
+      });
+      
+      console.log(`Creating map with ${locationMap.size} unique locations`);
+      locationMap.forEach((loc, key) => {
+        console.log(`  Location: ${loc.country} - ${loc.city} (${loc.count} attacks)`);
+      });
+      
+      // Initialize Leaflet map
+      if (geoipMap) {
+        geoipMap.remove();
+      }
+      
+      geoipMap = L.map('geoipMap').setView([20, 0], 2);
+      
+      // Add tile layer (dark theme for security aesthetic)
+      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '© OpenStreetMap contributors',
+        maxZoom: 18
+      }).addTo(geoipMap);
+      
+      // Prepare heatmap data (lat, lng, intensity)
+      const heatPoints = [];
+      
+      // Add markers for each unique location
+      locationMap.forEach((loc, key) => {
+        // Heatmap point with intensity based on count
+        heatPoints.push([loc.lat, loc.lng, Math.min(loc.count, 10)]);
+        
+        // Create custom marker with guaranteed visibility
+        const customIcon = L.divIcon({
+          className: 'custom-marker',
+          iconSize: [20, 20],
+          iconAnchor: [10, 10]
+        });
+        
+        const marker = L.marker([loc.lat, loc.lng], { icon: customIcon })
+          .bindPopup(`
+            <h4>🌍 ${loc.country}</h4>
+            <p><strong>City:</strong> ${loc.city}</p>
+            <p><strong>IP:</strong> ${loc.ip}</p>
+            <p><strong>Attacks:</strong> ${loc.count}</p>
+            <hr style="margin: 8px 0; border: none; border-top: 1px solid #ddd;">
+            <p style="font-size: 11px; color: #666;">
+              Last: ${new Date(loc.events[0].timestamp).toLocaleString()}
+            </p>
+          `);
+        
+        marker.addTo(geoipMap);
+        geoipMarkers.push(marker);
+      });
+      
+      // Add heatmap layer if we have the heat plugin
+      if (L.heatLayer && heatPoints.length > 0) {
+        geoipHeatLayer = L.heatLayer(heatPoints, {
+          radius: 25,
+          blur: 15,
+          maxZoom: 10,
+          max: 10,
+          gradient: {
+            0.4: 'blue',
+            0.6: 'cyan',
+            0.7: 'lime',
+            0.8: 'yellow',
+            1.0: 'red'
+          }
+        }).addTo(geoipMap);
+      }
+      
+      // Fit map to show all markers
+      if (geoipMarkers.length > 0) {
+        const group = new L.featureGroup(geoipMarkers);
+        const bounds = group.getBounds();
+        
+        // Ensure valid bounds before fitting
+        if (bounds.isValid()) {
+          geoipMap.fitBounds(bounds.pad(0.1));
+          console.log(`Map fitted to ${geoipMarkers.length} markers`);
+        } else {
+          console.warn('Invalid bounds, using default view');
+          geoipMap.setView([20, 0], 2);
+        }
+      }
+      
+      // Force map refresh after a short delay to ensure proper rendering
+      setTimeout(() => {
+        geoipMap.invalidateSize();
+        console.log(`GeoIP Map fully rendered: ${locationMap.size} unique locations, ${logsWithGeo.length} total events, ${geoipMarkers.length} markers displayed`);
+      }, 100);
+    }
+
+    // Load GeoIP data when page loads
+    document.addEventListener('DOMContentLoaded', loadGeoIPData);
+
+    // Listen for host filter changes
+    document.getElementById('hostFilter').addEventListener('change', function(e) {
+      const selectedHost = e.target.value;
+      console.log('Host filter changed to:', selectedHost);
+      
+      // If GeoIP map is already initialized, re-render with filtered data
+      if (geoipMapInitialized && document.getElementById('geoipTab').classList.contains('active')) {
+        // Clear existing markers
+        geoipMarkers.forEach(marker => marker.remove());
+        geoipMarkers = [];
+        if (geoipHeatLayer) {
+          geoipHeatLayer.remove();
+          geoipHeatLayer = null;
+        }
+        
+        // Re-initialize map with filtered data
+        initGeoIPMap(selectedHost);
+        
+        // Update country list and stats based on filtered data
+        updateGeoIPStatsForHost(selectedHost);
+      }
+    });
+
+    function updateGeoIPStatsForHost(selectedHost) {
+      if (!geoipData || !geoipData.logs) return;
+      
+      let logsWithGeo = geoipData.logs.filter(log => log.geoip && log.geoip.latitude && log.geoip.longitude);
+      
+      if (selectedHost !== 'all') {
+        logsWithGeo = logsWithGeo.filter(log => {
+          const logHostname = log.hostname.toLowerCase();
+          return logHostname.includes(selectedHost.toLowerCase());
+        });
+      }
+      
+      // Calculate stats for filtered data
+      const countryCounts = {};
+      const cityCounts = {};
+      logsWithGeo.forEach(log => {
+        const country = log.geoip.country || 'Unknown';
+        const city = log.geoip.city || 'Unknown';
+        countryCounts[country] = (countryCounts[country] || 0) + 1;
+        cityCounts[city] = (cityCounts[city] || 0) + 1;
+      });
+      
+      const topCountries = Object.entries(countryCounts)
+        .map(([country, count]) => ({ country, count }))
+        .sort((a, b) => b.count - a.count)
+        .slice(0, 10);
+      
+      // Update display
+      document.getElementById('geoipTotalIps').textContent = logsWithGeo.length;
+      document.getElementById('geoipCountries').textContent = Object.keys(countryCounts).length;
+      document.getElementById('geoipLocations').textContent = Object.keys(cityCounts).length;
+      document.getElementById('geoipTopCountry').textContent = topCountries.length > 0 ? topCountries[0].country : '-';
+      
+      updateCountryList(topCountries);
+    }
+  </script>
+  <script src="dashboard-visualization.js"></script>
+</body>
+</html>
