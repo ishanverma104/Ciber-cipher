@@ -4,8 +4,8 @@
  */
 
 // Default credentials
-const DEFAULT_USER = 'astrosiem';
-const DEFAULT_PASS_HASH = '650e3090c8e88a1a6e47ac873ef3c2f48ff3b7341234ef2971435d355195f2c4';
+const DEFAULT_USER = 'admin';
+const DEFAULT_PASS_HASH = '8c6976e5b5410415bde908bd4dee15dfb167a9c873fc4bb8a81f6f2ab448a918';
 
 let failedAttempts = 0;
 let lockoutUntil = 0;
@@ -19,7 +19,7 @@ async function hashPassword(password) {
 }
 
 function isAuthenticated() {
-    return sessionStorage.getItem('astrosiem_auth') === 'true';
+    return sessionStorage.getItem('cybercipher_auth') === 'true';
 }
 
 async function login(username, password) {
@@ -31,7 +31,7 @@ async function login(username, password) {
     
     if (username === DEFAULT_USER && passHash === DEFAULT_PASS_HASH) {
         // Success - set sessionStorage (persists across refresh, clears when tab closes)
-        sessionStorage.setItem('astrosiem_auth', 'true');
+        sessionStorage.setItem('cybercipher_auth', 'true');
         failedAttempts = 0;
         return { success: true, message: 'Login successful' };
     } else {
@@ -46,12 +46,12 @@ async function login(username, password) {
 }
 
 function logout() {
-    sessionStorage.removeItem('astrosiem_auth');
+    sessionStorage.removeItem('cybercipher_auth');
     window.location.href = 'login.html';
 }
 
 function requireAuth() {
-    if (sessionStorage.getItem('astrosiem_auth') !== 'true') {
+    if (sessionStorage.getItem('cybercipher_auth') !== 'true') {
         window.location.href = 'login.html';
         return false;
     }
