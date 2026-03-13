@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-AstroSIEM Nginx Log Parser
+Cyber-Cipher Nginx Log Parser
 Parses Nginx access and error logs, maps to MITRE techniques and compliance frameworks
 """
 

@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# AstroSIEM Collection Scheduler
+# Cyber-Cipher Collection Scheduler
 # ==============================
 # Schedules automatic log collection from all agents via cron
 #
@@ -55,7 +55,7 @@ remove_cron_job() {
 # Main
 main() {
     echo "========================================"
-    echo "AstroSIEM Collection Scheduler"
+    echo "Cyber-Cipher Collection Scheduler"
     echo "========================================"
     echo ""
     

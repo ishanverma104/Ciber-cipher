@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-AstroSIEM Docker Log Parser
+Cyber-Cipher Docker Log Parser
 Parses Docker daemon and container logs, maps to MITRE techniques and compliance frameworks
 """
 

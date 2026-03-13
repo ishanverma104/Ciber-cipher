@@ -1,4 +1,4 @@
-# Sample Kubernetes Logs for AstroSIEM Testing
+# Sample Kubernetes Logs for Cyber-Cipher Testing
 
 [K8S_AUDIT] [20/Feb/2026:10:15:23] user=admin verb=create resource=pods namespace=default reason="escalate privilege"
 [K8S_AUDIT] [20/Feb/2026:10:16:00] user=service-account verb=get resource=secrets namespace=kube-system reason="unauthorized access denied"

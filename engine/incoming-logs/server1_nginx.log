@@ -1,4 +1,4 @@
-# Sample Nginx Logs for AstroSIEM Testing
+# Sample Nginx Logs for Cyber-Cipher Testing
 
 [NGINX_ACCESS] 192.168.1.100 - - [20/Feb/2026:10:15:23 +0000] "GET /admin HTTP/1.1" 301 169 "-" "Mozilla/5.0"
 [NGINX_ACCESS] 192.168.1.100 - - [20/Feb/2026:10:15:24 +0000] "GET /admin/ HTTP/1.1" 200 2456 "-" "Mozilla/5.0"

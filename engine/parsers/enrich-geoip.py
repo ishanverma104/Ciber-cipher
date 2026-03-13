@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-GeoIP enrichment script for AstroSIEM
+GeoIP enrichment script for Cyber-Cipher
 Extracts IP addresses from parsed logs and fetches geographic coordinates using IP-API
 Caches results to avoid rate limiting (45 requests/minute)
 """
@@ -64,7 +64,7 @@ def fetch_geoip_data(ip, cache):
         url = f"http://ip-api.com/json/{ip}?fields=status,message,country,countryCode,region,regionName,city,lat,lon,timezone,isp,org,as,query"
 
         req = urllib.request.Request(
-            url, headers={"User-Agent": "AstroSIEM/1.0 (Security Analysis)"}
+            url, headers={"User-Agent": "Cyber-Cipher/1.0 (Security Analysis)"}
         )
 
         with urllib.request.urlopen(req, timeout=10) as response:
@@ -179,7 +179,7 @@ def generate_geoip_summary(logs):
 
 def main():
     print("=" * 60)
-    print("AstroSIEM GeoIP Enrichment")
+    print("Cyber-Cipher GeoIP Enrichment")
     print("=" * 60)
 
     # Load parsed logs

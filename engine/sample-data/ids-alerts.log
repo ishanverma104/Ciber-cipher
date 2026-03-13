@@ -1,4 +1,4 @@
-# Sample IDS Alerts for AstroSIEM Testing
+# Sample IDS Alerts for Cyber-Cipher Testing
 # Format: [IDS] <Suricata/Snort alert line>
 
 [IDS] 02/20/2026-10:15:23.000000  [1:1000001:1] ET SCAN Potential SSH Scan [Classification: Attempted Information Leak] [Priority: 2] {TCP} 192.168.1.100:45678 -> 10.0.0.5:22

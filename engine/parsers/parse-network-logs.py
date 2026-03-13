@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-AstroSIEM Network Log Parser
+Cyber-Cipher Network Log Parser
 Parses firewall and IDS logs, maps to MITRE techniques and compliance frameworks
 """
 

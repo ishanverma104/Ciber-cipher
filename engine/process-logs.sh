@@ -1,13 +1,13 @@
 #!/bin/bash
 
-# AstroSIEM Log Processor
+# Cyber-Cipher Log Processor
 # =======================
 # Runs all log parsers to process incoming logs
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
 echo "========================================"
-echo "AstroSIEM Log Processor"
+echo "Cyber-Cipher Log Processor"
 echo "========================================"
 echo ""
 

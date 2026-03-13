@@ -1,4 +1,4 @@
-# Sample Docker Logs for AstroSIEM Testing
+# Sample Docker Logs for Cyber-Cipher Testing
 
 [DOCKER_CONTAINER] container=web-app image=nginx:latest [20/Feb/2026:10:15:23] GET /admin 200
 [DOCKER_CONTAINER] container=web-app image=nginx:latest [20/Feb/2026:10:16:00] suspicious process detected: nc -l -p 4444

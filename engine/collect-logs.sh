@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# AstroSIEM Unified Log Collector
+# Cyber-Cipher Unified Log Collector
 # ================================
 # Collects logs from all unified agents
 # Fetches manifest.json first, then downloads all discovered sources
@@ -202,7 +202,7 @@ collect_from_agent() {
 # Main execution
 main() {
     echo "========================================"
-    echo "AstroSIEM Unified Log Collector"
+    echo "Cyber-Cipher Unified Log Collector"
     echo "========================================"
     echo ""
     

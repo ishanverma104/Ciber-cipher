@@ -1,4 +1,4 @@
-# Sample Firewall Logs for AstroSIEM Testing
+# Sample Firewall Logs for Cyber-Cipher Testing
 # Format: [FIREWALL] <log line>
 
 [FIREWALL] Feb 20 10:15:23 server1 kernel: [UFW BLOCK] IN=eth0 OUT= MAC=00:11:22:33:44:55 SRC=192.168.1.100 DST=10.0.0.5 PROTO=TCP DPT=22

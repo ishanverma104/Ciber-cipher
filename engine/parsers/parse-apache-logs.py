@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-AstroSIEM Apache Log Parser
+Cyber-Cipher Apache Log Parser
 Parses Apache access and error logs, maps to MITRE techniques and compliance frameworks
 """
 

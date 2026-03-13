@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-AstroSIEM Kubernetes Log Parser
+Cyber-Cipher Kubernetes Log Parser
 Parses Kubernetes audit, pod, and component logs, maps to MITRE techniques and compliance frameworks
 """
 
