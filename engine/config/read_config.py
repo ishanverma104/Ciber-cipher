@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Configuration reader for AstroSIEM agent settings.
+Configuration reader for Cyber-Cipher agent settings.
 Reads agent configuration from YAML file and outputs values.
 
 Usage:

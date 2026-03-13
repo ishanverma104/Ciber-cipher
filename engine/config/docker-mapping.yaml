@@ -1,4 +1,4 @@
-# AstroSIEM Docker Log Mapping Configuration
+# Cyber-Cipher Docker Log Mapping Configuration
 # Maps Docker log patterns to MITRE techniques and compliance frameworks
 
 # Docker container security patterns

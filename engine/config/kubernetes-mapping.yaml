@@ -1,4 +1,4 @@
-# AstroSIEM Kubernetes Log Mapping Configuration
+# Cyber-Cipher Kubernetes Log Mapping Configuration
 # Maps K8s log patterns to MITRE techniques and compliance frameworks
 
 # Kubernetes audit patterns

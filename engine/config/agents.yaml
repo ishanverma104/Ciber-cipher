@@ -1,11 +1,11 @@
-# AstroSIEM Agent Configuration
+# Cyber-Cipher Agent Configuration
 # =============================
 # Configuration for unified agents
 # Each agent runs the unified agent that auto-discovers log sources
 #
 # To add a new agent:
 # 1. Install the unified agent on the target system:
-#    sudo /path/to/AstroSIEM/agent/install.sh
+#    sudo /path/to/Cyber-Cipher/agent/install.sh
 # 2. Add the agent IP below with a descriptive name
 # 3. Run the collector: ./collect-logs.sh
 
