@@ -1,5 +1,5 @@
 #!/bin/bash
-# AstroSIEM Agent - Network Log Collector
+# Cyber-Cipher Agent - Network Log Collector
 # Collects firewall and IDS logs for SIEM analysis
 
 STATE_DIR="/var/lib/astro-siem"
@@ -51,7 +51,7 @@ collect_ids_logs() {
 }
 
 main() {
-    echo "AstroSIEM Network Log Collection"
+    echo "Cyber-Cipher Network Log Collection"
     echo "================================"
     
     mkdir -p "$STATE_DIR"
@@ -61,7 +61,7 @@ main() {
     
     # Collect and combine all network logs
     {
-        echo "# AstroSIEM Network Logs - $(date -Iseconds)"
+        echo "# Cyber-Cipher Network Logs - $(date -Iseconds)"
         echo "# Format: firewall | ids"
         echo ""
         

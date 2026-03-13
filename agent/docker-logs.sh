@@ -1,12 +1,12 @@
 #!/bin/bash
-# AstroSIEM Agent - Docker Log Collector
+# Cyber-Cipher Agent - Docker Log Collector
 # Collects Docker daemon and container logs for SIEM analysis
 
 STATE_DIR="/var/lib/astro-siem"
 DOCKER_LOG="$STATE_DIR/docker-logs.log"
 
 main() {
-    echo "AstroSIEM Docker Log Collection"
+    echo "Cyber-Cipher Docker Log Collection"
     echo "==============================="
     
     mkdir -p "$STATE_DIR"
@@ -14,7 +14,7 @@ main() {
     > "$DOCKER_LOG"
     
     {
-        echo "# AstroSIEM Docker Logs - $(date -Iseconds)"
+        echo "# Cyber-Cipher Docker Logs - $(date -Iseconds)"
         echo "# Format: [DOCKER_DAEMON] | [DOCKER_CONTAINER]"
         echo ""
         

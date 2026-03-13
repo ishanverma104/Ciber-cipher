@@ -1,7 +1,7 @@
 #!/bin/bash
 set -euo pipefail
 
-# AstroSIEM Unified Agent Installer
+# Cyber-Cipher Unified Agent Installer
 # ==================================
 # One-command installer for all Linux distributions
 
@@ -130,7 +130,7 @@ configure_apache() {
     mkdir -p "$conf_dir"
     
     cat > "$conf_dir/astro-siem.conf" << 'EOF'
-# AstroSIEM Agent Log Export Configuration
+# Cyber-Cipher Agent Log Export Configuration
 Alias /log_export /var/lib/astro-siem/exports
 ScriptAlias /vuln-scan/trigger /opt/astro-siem/agent/vuln-trigger.cgi
 
@@ -174,7 +174,7 @@ install_systemd_service() {
     # Copy service file
     cat > /etc/systemd/system/astro-siem-agent.service << EOF
 [Unit]
-Description=AstroSIEM Unified Agent - Log Exporter
+Description=Cyber-Cipher Unified Agent - Log Exporter
 After=network.target
 
 [Service]
@@ -188,7 +188,7 @@ EOF
     # Copy timer file
     cat > /etc/systemd/system/astro-siem-agent.timer << 'EOF'
 [Unit]
-Description=AstroSIEM Agent - Daily log export
+Description=Cyber-Cipher Agent - Daily log export
 Requires=astro-siem-agent.service
 
 [Timer]
@@ -209,7 +209,7 @@ EOF
     # Install vulnerability scan service
     cat > /etc/systemd/system/astro-siem-vuln-scan.service << EOF
 [Unit]
-Description=AstroSIEM Vulnerability Scan Trigger
+Description=Cyber-Cipher Vulnerability Scan Trigger
 After=network.target
 
 [Service]
@@ -270,7 +270,7 @@ install_agent_files() {
 # Main installation
 main() {
     echo "========================================"
-    echo "AstroSIEM Unified Agent Installer"
+    echo "Cyber-Cipher Unified Agent Installer"
     echo "========================================"
     echo ""
     

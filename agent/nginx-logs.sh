@@ -1,5 +1,5 @@
 #!/bin/bash
-# AstroSIEM Agent - Nginx Log Collector
+# Cyber-Cipher Agent - Nginx Log Collector
 # Collects Nginx access and error logs for SIEM analysis
 
 STATE_DIR="/var/lib/astro-siem"
@@ -13,7 +13,7 @@ NGINX_LOG_PATHS=(
 )
 
 main() {
-    echo "AstroSIEM Nginx Log Collection"
+    echo "Cyber-Cipher Nginx Log Collection"
     echo "==============================="
     
     mkdir -p "$STATE_DIR"
@@ -21,7 +21,7 @@ main() {
     > "$NGINX_LOG"
     
     {
-        echo "# AstroSIEM Nginx Logs - $(date -Iseconds)"
+        echo "# Cyber-Cipher Nginx Logs - $(date -Iseconds)"
         echo "# Format: [NGINX_ACCESS] | [NGINX_ERROR]"
         echo ""
         

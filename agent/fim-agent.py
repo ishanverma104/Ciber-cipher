@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-AstroSIEM Agent FIM (File Integrity Monitoring)
+Cyber-Cipher Agent FIM (File Integrity Monitoring)
 Lightweight FIM for endpoint agents
 Monitors critical system files and detects changes
 """

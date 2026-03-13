@@ -1,5 +1,5 @@
 #!/bin/bash
-# AstroSIEM Agent - Kubernetes Log Collector
+# Cyber-Cipher Agent - Kubernetes Log Collector
 # Collects Kubernetes audit, pod, and node logs for SIEM analysis
 # Only runs if Kubernetes is detected
 
@@ -84,7 +84,7 @@ collect_k8s_file_logs() {
 }
 
 main() {
-    echo "AstroSIEM Kubernetes Log Collection"
+    echo "Cyber-Cipher Kubernetes Log Collection"
     echo "==================================="
     
     mkdir -p "$STATE_DIR"
@@ -100,7 +100,7 @@ main() {
     > "$K8S_LOG"
     
     {
-        echo "# AstroSIEM Kubernetes Logs - $(date -Iseconds)"
+        echo "# Cyber-Cipher Kubernetes Logs - $(date -Iseconds)"
         echo "# Format: [K8S_POD] | [K8S_EVENT] | [K8S_LOG] | [K8S_AUDIT]"
         echo ""
         
