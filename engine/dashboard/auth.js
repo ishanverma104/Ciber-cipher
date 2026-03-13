@@ -58,4 +58,4 @@ function requireAuth() {
     return true;
 }
 
-window.Cyber-CipherAuth = { login, logout, isAuthenticated, requireAuth };
+window.CyberCipherAuth = { login, logout, isAuthenticated, requireAuth };

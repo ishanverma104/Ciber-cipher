@@ -183,7 +183,7 @@
   <script src="auth.js"></script>
   <script>
     // Check if already authenticated (redirect to dashboard)
-    if (window.Cyber-CipherAuth.isAuthenticated()) {
+    if (window.CyberCipherAuth.isAuthenticated()) {
       window.location.href = 'dashboard.html';
     }
 
@@ -202,7 +202,7 @@
       errorMessage.classList.remove('show');
       
       try {
-        const result = await window.Cyber-CipherAuth.login(username, password);
+        const result = await window.CyberCipherAuth.login(username, password);
         
         if (result.success) {
           // Redirect to dashboard

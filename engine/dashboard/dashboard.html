@@ -1578,7 +1578,7 @@
 
   <script>
     // Authentication check - require login on every page load
-    if (!Cyber-CipherAuth.requireAuth()) {
+    if (!CyberCipherAuth.requireAuth()) {
       // Will redirect to login.html
     }
 
@@ -1619,7 +1619,7 @@
     toggleBtn.addEventListener('click', () => setDarkMode(!document.body.classList.contains('dark')));
 
     // Logout button handler
-    document.getElementById('logoutBtn').addEventListener('click', () => Cyber-CipherAuth.logout());
+    document.getElementById('logoutBtn').addEventListener('click', () => CyberCipherAuth.logout());
 
     // Refresh button - reload data without logging out
     document.getElementById('refreshBtn').addEventListener('click', () => {
