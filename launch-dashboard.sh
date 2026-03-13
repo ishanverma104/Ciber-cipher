@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# AstroSIEM Web Dashboard Launcher
+# Cyber-Cipher Web Dashboard Launcher
 # Starts the web server so users can view the dashboard at http://127.0.0.1:8080/dashboard/
 
 # Get the directory where this script is located
@@ -50,7 +50,7 @@ else
 fi
 
 echo ""
-echo "🚀 Starting AstroSIEM..."
+echo "🚀 Starting Cyber-Cipher..."
 echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
 echo ""
 echo "🔐 Open this URL in your browser:"
