@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>AstroSIEM - Login</title>
+  <title>Cyber-Cipher - Login</title>
   <style>
     :root {
       --bg-primary: #f8f9fa;
@@ -156,7 +156,7 @@
   <button class="theme-toggle" onclick="toggleTheme()">🌙</button>
   
   <div class="login-container">
-    <div class="logo">🔒 AstroSIEM</div>
+    <div class="logo">🔒 Cyber-Cipher</div>
     <div class="subtitle">Security Information & Event Management</div>
     
     <div class="error-message" id="errorMessage"></div>
@@ -183,7 +183,7 @@
   <script src="auth.js"></script>
   <script>
     // Check if already authenticated (redirect to dashboard)
-    if (window.AstroSIEMAuth.isAuthenticated()) {
+    if (window.Cyber-CipherAuth.isAuthenticated()) {
       window.location.href = 'dashboard.html';
     }
 
@@ -202,7 +202,7 @@
       errorMessage.classList.remove('show');
       
       try {
-        const result = await window.AstroSIEMAuth.login(username, password);
+        const result = await window.Cyber-CipherAuth.login(username, password);
         
         if (result.success) {
           // Redirect to dashboard

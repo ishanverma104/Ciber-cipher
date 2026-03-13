@@ -1,5 +1,5 @@
 /**
- * AstroSIEM Authentication Module
+ * Cyber-Cipher Authentication Module
  * Simple session management - persists until explicit logout
  */
 
@@ -58,4 +58,4 @@ function requireAuth() {
     return true;
 }
 
-window.AstroSIEMAuth = { login, logout, isAuthenticated, requireAuth };
+window.Cyber-CipherAuth = { login, logout, isAuthenticated, requireAuth };
