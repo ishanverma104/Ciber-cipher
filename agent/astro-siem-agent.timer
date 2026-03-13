@@ -1,5 +1,5 @@
 [Unit]
-Description=AstroSIEM Agent - Daily log export
+Description=Cyber-Cipher Agent - Daily log export
 Requires=astro-siem-agent.service
 
 [Timer]

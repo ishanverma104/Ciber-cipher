@@ -1,5 +1,5 @@
 [Unit]
-Description=AstroSIEM Unified Agent - Log Exporter
+Description=Cyber-Cipher Unified Agent - Log Exporter
 After=network.target
 
 [Service]

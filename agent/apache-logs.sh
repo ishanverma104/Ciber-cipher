@@ -1,5 +1,5 @@
 #!/bin/bash
-# AstroSIEM Agent - Apache Log Collector
+# Cyber-Cipher Agent - Apache Log Collector
 # Collects Apache access and error logs for SIEM analysis
 
 STATE_DIR="/var/lib/astro-siem"
@@ -33,7 +33,7 @@ collect_apache_logs() {
 }
 
 main() {
-    echo "AstroSIEM Apache Log Collection"
+    echo "Cyber-Cipher Apache Log Collection"
     echo "================================"
     
     mkdir -p "$STATE_DIR"
@@ -41,7 +41,7 @@ main() {
     > "$APACHE_LOG"
     
     {
-        echo "# AstroSIEM Apache Logs - $(date -Iseconds)"
+        echo "# Cyber-Cipher Apache Logs - $(date -Iseconds)"
         echo "# Format: [APACHE_ACCESS] | [APACHE_ERROR]"
         echo ""
         

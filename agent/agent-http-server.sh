@@ -1,7 +1,7 @@
 #!/bin/bash
 set -euo pipefail
 
-# AstroSIEM Unified Agent - Log Export Script
+# Cyber-Cipher Unified Agent - Log Export Script
 # ============================================
 # Auto-detects distro, discovers log sources, exports incrementally
 # Runs via systemd timer every 24 hours
@@ -400,7 +400,7 @@ EOF
 # Main execution
 main() {
     echo "======================================"
-    echo "AstroSIEM Unified Agent - Log Export"
+    echo "Cyber-Cipher Unified Agent - Log Export"
     echo "======================================"
     
     # Detect distribution
