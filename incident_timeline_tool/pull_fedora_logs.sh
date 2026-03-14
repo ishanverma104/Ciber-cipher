@@ -1,4 +1,3 @@
-#!/bin/bash
 
 # Define endpoint IP
 FEDORA_IP="192.168.122.63"
