@@ -1,4 +1,4 @@
-
+#!/bin/bash
 # Define endpoint IP
 FEDORA_IP="192.168.122.63"
 REMOTE_FILE="log_export/secure.log"
