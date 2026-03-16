@@ -7,6 +7,7 @@ LOG_DIR = "logs"
 OUTPUT_FILE = "data/parsed_logs.json"
 MITRE_FILE = "data/mitre_auth_rules.json"
 DEBUG_MODE = False
+VERBOSE_LOGGING = True
 
 
 def load_mitre_rules():
