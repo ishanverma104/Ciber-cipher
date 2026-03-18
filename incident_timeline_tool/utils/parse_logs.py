@@ -9,6 +9,7 @@ MITRE_FILE = "data/mitre_auth_rules.json"
 DEBUG_MODE = False
 VERBOSE_LOGGING = True
 ENABLE_JSON_OUTPUT = True
+INCLUDE_MITRE_TACTICS = True
 
 
 def load_mitre_rules():
