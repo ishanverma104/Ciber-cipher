@@ -6,6 +6,7 @@ from pathlib import Path
 from db.alert_store import AlertStore
 
 max_retries = 3
+detection_timeout = 60
 
 DETECTION_RULES = {
     "BRUTE-001": {
