@@ -7,6 +7,7 @@ from datetime import datetime, timezone
 THREAT_INTEL_FILE = "data/threat_intel.json"
 LOCAL_BLOCKLIST = "data/blocklist.json"
 API_TIMEOUT = 30
+CACHE_TTL = 3600
 
 
 class ThreatIntel:
