@@ -14,7 +14,8 @@ STATE_DIR = "/var/lib/astro-siem"
 FIM_BASELINE = f"{STATE_DIR}/fim-baseline.json"
 FIM_LOG = f"{STATE_DIR}/fim-changes.log"
 
-WATCH_DIRS = ["/etc", "/var/www", "/home", "/root"]
+WATCH_DIRS = ["/etc", "/var/www", "/home", "/root", "/boot"]
+HASH_ALGORITHM = "sha256"
 
 
 def compute_hash(filepath):
