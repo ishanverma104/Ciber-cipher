@@ -5,6 +5,7 @@ from datetime import datetime, timezone
 DB_PATH = "db/incident_events.db"
 BATCH_SIZE = 100
 QUERY_LIMIT = 1000
+DEFAULT_SEVERITY = "MEDIUM"
 
 
 class AlertStore:
