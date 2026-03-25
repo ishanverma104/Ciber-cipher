@@ -3,6 +3,7 @@ from typing import List, Dict, Optional
 
 DB_PATH = "db/incident_events.db"
 MAX_EVENT_AGE_DAYS = 90
+EVENT_RETENTION_DAYS = 30
 
 
 class EventStore:
