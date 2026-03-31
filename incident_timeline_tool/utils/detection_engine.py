@@ -75,6 +75,13 @@ DETECTION_RULES = {
         "pattern": r"invalid user|unknown user",
         "mitre": ["T1110", "T1078"],
     },
+    "PORT-001": {
+        "name": "Port Scan Detected",
+        "severity": "MEDIUM",
+        "description": "Potential port scanning activity detected",
+        "pattern": r" Connection refused|Connection reset",
+        "mitre": ["T1046"],
+    },
 }
 
 
