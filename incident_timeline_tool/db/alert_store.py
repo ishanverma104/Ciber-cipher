@@ -115,6 +115,7 @@ class AlertStore:
             SELECT severity, status, COUNT(*) as count 
             FROM alerts 
             GROUP BY severity, status
+            ORDER BY count DESC
         """)
         rows = self.cursor.fetchall()
         stats = {"by_severity": {}, "by_status": {}}
