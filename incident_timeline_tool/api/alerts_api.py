@@ -13,17 +13,21 @@ def get_alerts():
     severity = request.args.get('severity')
     status = request.args.get('status')
     limit = request.args.get('limit', 100, type=int)
+    start_time = request.args.get('start_time')
+    end_time = request.args.get('end_time')
     
     alerts = alert_store.query_alerts(
         severity=severity,
-        status=status
+        status=status,
+        start_time=start_time,
+        end_time=end_time
     )
     
     for alert in alerts[:limit]:
         if alert.get('mitre_techniques'):
             try:
                 alert['mitre_techniques'] = eval(alert['mitre_techniques'])
-            except:
+            except (ValueError, SyntaxError):
                 pass
     
     return jsonify({
