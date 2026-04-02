@@ -8,6 +8,7 @@ THREAT_INTEL_FILE = "data/threat_intel.json"
 LOCAL_BLOCKLIST = "data/blocklist.json"
 API_TIMEOUT = 30
 CACHE_TTL = 3600
+REQUEST_RETRY_COUNT = 2
 MAX_CACHE_SIZE = 1000
 ENABLE_DNS_LOOKUP = True
 
