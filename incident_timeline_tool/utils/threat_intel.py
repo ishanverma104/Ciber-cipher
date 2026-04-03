@@ -89,6 +89,7 @@ class ThreatIntel:
 
         enriched["threat_intel"] = threat_info
         enriched["threat_detected"] = len(threat_info) > 0
+        enriched["enriched_at"] = datetime.now(timezone.utc).isoformat()
         return enriched
 
     def update_blocklist(self, ip: str = None, domain: str = None):
