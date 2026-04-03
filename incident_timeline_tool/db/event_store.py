@@ -5,6 +5,7 @@ DB_PATH = "db/incident_events.db"
 MAX_EVENT_AGE_DAYS = 90
 EVENT_RETENTION_DAYS = 30
 DB_CONNECTION_TIMEOUT = 30
+ENABLE_EVENT_INDEXING = True
 
 
 class EventStore:
