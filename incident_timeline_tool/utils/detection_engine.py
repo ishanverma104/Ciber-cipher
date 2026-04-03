@@ -8,6 +8,7 @@ from db.alert_store import AlertStore
 max_retries = 3
 detection_timeout = 60
 enable_alerts = True
+parallel_scan = True
 
 DETECTION_RULES = {
     "BRUTE-001": {
