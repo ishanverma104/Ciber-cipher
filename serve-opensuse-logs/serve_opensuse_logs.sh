@@ -46,4 +46,3 @@ echo "messages.log is now available at: http://$IP/log_export/messages.log"
 # This script is used for sending logs from openSUSE Tumbleweed systems
 # to the Incident Timeline Reconstruction Tool's server for visualization.
 
-
