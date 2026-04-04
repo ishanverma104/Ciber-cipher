@@ -42,4 +42,3 @@ echo -e "secure.log is now available at: http://$IP/log_export/secure.log"
 # This script is used for sending logs from Fedora/RHEL system
 # to the Incident Timeline Reconstruction Tool's Server where the logs will be visualized
 
-
