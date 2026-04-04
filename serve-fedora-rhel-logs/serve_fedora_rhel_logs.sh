@@ -37,7 +37,7 @@ sudo chmod +r "$APACHE_DIR/secure.log"
 # Detect local IP address for message
 IP="$(hostname -I | awk '{print $1}')"
 
-echo -e "\u2705 secure.log is now available at: http://$IP/log_export/secure.log"
+echo -e "secure.log is now available at: http://$IP/log_export/secure.log"
 
 # This script is used for sending logs from Fedora/RHEL system
 # to the Incident Timeline Reconstruction Tool's Server where the logs will be visualized
