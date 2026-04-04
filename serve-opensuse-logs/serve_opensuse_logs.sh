@@ -41,7 +41,7 @@ sudo chmod +r "$APACHE_DIR/messages.log"
 # Detect local IP address for message
 IP="$(hostname -I | awk '{print $1}')"
 
-echo "\E2\9C\85 messages.log is now available at: http://$IP/log_export/messages.log"
+echo "messages.log is now available at: http://$IP/log_export/messages.log"
 
 # This script is used for sending logs from openSUSE Tumbleweed systems
 # to the Incident Timeline Reconstruction Tool's server for visualization.
