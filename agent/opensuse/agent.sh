@@ -70,7 +70,7 @@ export_syslog() {
         fi
         return 0
     fi
-    
+
     for logfile in "${log_files[@]}"; do
         basename=$(basename "$logfile")
         if cp "$logfile" "$output_dir/$basename" 2>/dev/null; then
@@ -81,7 +81,7 @@ export_syslog() {
             log_error "Failed to export $logfile"
         fi
     done
-    
+
     if [ $count -eq 0 ]; then
         log_error "No syslog files could be exported"
     fi
