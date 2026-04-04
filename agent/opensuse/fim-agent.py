@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-AstroSIEM FIM Agent - Fedora/RHEL
+AstroSIEM FIM Agent - openSUSE
 File Integrity Monitoring for endpoints
 """
 
