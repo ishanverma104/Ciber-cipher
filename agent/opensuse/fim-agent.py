@@ -15,6 +15,7 @@ FIM_BASELINE = f"{STATE_DIR}/fim-baseline.json"
 FIM_LOG = f"{STATE_DIR}/fim-changes.log"
 
 WATCH_DIRS = ["/etc", "/var/www", "/home", "/root"]
+ENABLE_FILE_HASHING = True
 
 
 def compute_hash(filepath):
