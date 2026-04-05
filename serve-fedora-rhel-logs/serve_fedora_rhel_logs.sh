@@ -6,6 +6,7 @@ EXPORT_FILE="$HOME/log_export/secure.log"
 
 # Apache's public directory (default on Fedora/RHEL)
 APACHE_DIR="/var/www/html/log_export"
+LOG_ROTATION_DAYS=7
 
 echo "[*] Checking for httpd installation..."
 if ! rpm -q httpd > /dev/null 2>&1; then
