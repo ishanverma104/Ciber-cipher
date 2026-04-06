@@ -10,6 +10,7 @@ detection_timeout = 60
 enable_alerts = True
 parallel_scan = True
 alert_cooldown_seconds = 60
+DETECTION_WORKERS = 4
 
 DETECTION_RULES = {
     "BRUTE-001": {
