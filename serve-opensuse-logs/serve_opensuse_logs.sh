@@ -39,10 +39,7 @@ sudo mkdir -p "$APACHE_DIR"
 sudo cp "$EXPORT_FILE" "$APACHE_DIR/messages.log"
 sudo chmod +r "$APACHE_DIR/messages.log"
 
-# Detect local IP address for message
-IP="$(hostname -I | awk '{print $1}')"
 
-echo "messages.log is now available at: http://$IP/log_export/messages.log"
 
 # This script is used for sending logs from openSUSE Tumbleweed systems
 # to the Incident Timeline Reconstruction Tool's server for visualization.
