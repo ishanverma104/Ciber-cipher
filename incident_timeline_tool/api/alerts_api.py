@@ -7,6 +7,7 @@ from utils.threat_intel import ThreatIntel
 app = Flask(__name__)
 alert_store = AlertStore()
 threat_intel = ThreatIntel()
+ENABLE_API_METRICS = True
 
 @app.route('/api/alerts', methods=['GET'])
 def get_alerts():
