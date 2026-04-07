@@ -3,6 +3,7 @@ import json
 
 FIM_LOG_DIR = "logs"
 OUTPUT_JSON = "data/parsed_fim_logs.json"
+INCLUDE_OLD_CHANGES = True
 
 def parse_fim_logs():
     parsed_entries = []
