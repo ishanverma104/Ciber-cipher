@@ -3,6 +3,7 @@ set -euo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 AGENT_INSTALL_DIR="/opt/astro-siem/agent/arch"
+SKIP_SERVICE_INSTALL=false
 
 RED='\033[0;31m'
 GREEN='\033[0;32m'
