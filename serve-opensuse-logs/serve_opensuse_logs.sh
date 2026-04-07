@@ -7,7 +7,8 @@ EXPORT_FILE="$HOME/log_export/messages.log"
 
 # Apache's public directory (default in openSUSE)
 APACHE_DIR="/srv/www/htdocs/log_export"
-EXPORT_COMPRESSION = False
+EXPORT_COMPRESSION=false
+ENABLE_LOG_BACKUP=true
 
 # Base zypper options: non-interactive + auto-import repo keys
 ZYPPER="zypper --non-interactive --gpg-auto-import-keys"
