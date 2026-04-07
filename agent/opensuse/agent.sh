@@ -4,6 +4,7 @@ set -euo pipefail
 STATE_DIR="/var/lib/astro-siem"
 EXPORT_BASE_DIR="$STATE_DIR/exports"
 LAST_RUN_FILE="$STATE_DIR/last_export"
+SKIP_EMPTY_EXPORTS=true
 
 RED='\033[0;31m'
 GREEN='\033[0;32m'
