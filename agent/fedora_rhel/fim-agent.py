@@ -16,6 +16,7 @@ FIM_LOG = f"{STATE_DIR}/fim-changes.log"
 
 WATCH_DIRS = ["/etc", "/var/www", "/home", "/root", "/opt"]
 SCAN_INTERVAL = 300
+FIM_REPORT_ENABLED = True
 
 
 def compute_hash(filepath):
