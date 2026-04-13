@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Cyber Secure Dashboard</title>
+
+<style>
+body {
+  margin: 0;
+  display: flex;
+  font-family: Arial;
+  background: #0f172a;
+  color: white;
+}
+
+.sidebar {
+  width: 220px;
+  height: 100vh;
+  background: #020617;
+  padding: 20px;
+}
+
+.sidebar h2 {
+  color: #38bdf8;
+}
+
+.sidebar a {
+  display: block;
+  padding: 10px;
+  margin: 10px 0;
+  cursor: pointer;
+  border--radius: 6px;
+}
+
+..sidebar a:hover {
+  background: #1e293b;
+}
+
+..main {
+  flex: 1;
+  padding: 20px;
+}
+
+..section {
+  display: none;
+}
+
+.active {
+  display: block;
+}
+
+/* cards */
+.cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px,1fr));
+  gap: 20px;
+}
+
+.card {
+  background: #1e293b;
+  padding: 20px;
+  border-radius: 10px;
+}
+
+/* logs */
+.log {
+  background: #1e293b;
+  margin: 10px 0;
+  padding: 10px;
+  border-left: 4px solid #38bdf8;
+}
+
+/* threats */
+.threat {
+  background: #1e293b;
+  padding: 10px;
+  margin: 10px 0;
+  border-left: 4px solid red;
+}
+
+/* settings */
+input, select {
+  width: 100%;
+  padding: 8px;
+  margin: 10px 0;
+}
+</style>
+
+</head>
+<body>
+
+<!-- Sidebar -->
+<div class="sidebar">
+  <h2>SecureDash</h2>
+  <a onclick="showSection('dashboard')">Dashboard</a>
+  <a onclick="showSection('threats')">Threats</a>
+  <a onclick="showSection('logs')">Logs</a>
+  <a onclick="showSection('settings')">Settings</a>
+</div>
+
+<!-- Main -->
+<div class="main">
+
+  <!-- Dashboard -->
+  <div id="dashboard" class="section active">
+    <h1>Dashboard</h1>
+    <div class="cards">
+      <div class="card">
+        <h3>Threats Detected</h3>
+        <p>128</p>
+      </div>
+      <div class="card">
+        <h3>Blocked Attacks</h3>
+        <p>542</p>
+      </div>
+      <div class="card">
+        <h3>System Health</h3>
+        <p>98%</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Threats -->
+  <div id="threats" class="section">
+    <h1>Threat Monitoring</h1>
+
+    <div class="threat">⚠ SQL Injection Attempt - High Risk</div>
+    <div class="threat">⚠ XSS Attack Detected - Medium Risk</div>
+    <div class="threat">⚠ Brute Force Login - High Risk</div>
+
+  </div>
+
+  <!-- Logs -->
+  <div id="logs" class="section">
+    <h1>System Logs</h1>
+
+    <div class="log">✔ User login successful</div>
+    <div class="log">✔ Firewall updated</div>
+    <div class="log">✔ Suspicious IP blocked</div>
+    <div class="log">✔ File access granted</div>
+
+  </div>
+
+  <!-- Settings -->
+  <div id="settings" class="section">
+    <h1>Settings</h1>
+
+    <label>Username</label>
+    <input type="text" value="Admin">
+
+    <label>Security Level</label>
+    <select>
+      <option>Low</option>
+      <option selected>Medium</option>
+      <option>High</option>
+    </select>
+
+    <label>Enable Firewall</label>
+    <select>
+      <option>Yes</option>
+      <option>No</option>
+    </select>
+
+  </div>
+
+</div>
+
+<script>
+function showSection(id) {
+  document.querySelectorAll('.section').forEach(sec => {
+    sec.classList.remove('active');
+  });
+  document.getElementById(id).classList.add('active');
+}
+</script>
+
+</body>
+</html>
