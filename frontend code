@@ -20,28 +20,28 @@ body {
   padding: 20px;
 }
 
-.sidebar h2 {
+..sidebar h2 {
   color: #38bdf8;
 }
 
-.sidebar a {
+..sidebar a {
   display: block;
   padding: 10px;
   margin: 10px 0;
   cursor: pointer;
-  border-radius: 6px;
+  border--radius: 6px;
 }
 
-.sidebar a:hover {
+..sidebar a:hover {
   background: #1e293b;
 }
 
-.main {
+..main {
   flex: 1;
   padding: 20px;
 }
 
-.section {
+..section {
   display: none;
 }
 
