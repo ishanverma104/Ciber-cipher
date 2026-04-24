@@ -1,0 +1,25 @@
+# Cyber-Cipher Windows Relay Configuration
+# =======================================
+# Configuration for Windows-only relays that expose event-log JSON over HTTP.
+#
+# To add a Windows relay:
+# 1. Install the relay from windows-agent/install-cipher-relay.ps1
+# 2. Add the relay IP below with a descriptive name
+# 3. Run the collector: ./collect-windows-relays.sh
+
+relays:
+  win-endpoint1:
+    ip: 192.168.122.150
+    description: "Windows 11 relay"
+
+  # Add more Windows relays as needed:
+  # win-endpoint2:
+  #   ip: 192.168.122.151
+  #   description: "Windows 10 relay"
+
+settings:
+  incoming_dir: incoming-logs
+  protocol: http
+  default_port: 8091
+  timeout: 30
+  export_path: cc-winrelay/latest

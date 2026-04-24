@@ -4,7 +4,7 @@
     "technique_name": "Password Guessing",
     "tactic": "Credential Access",
     "description": "Brute-force or one-time password attempts.",
-    "keywords": ["Failed password", "authentication failure", "invalid user", "login failed"]
+    "keywords": ["Failed password", "authentication failure", "invalid user", "login failed", "failed to log on", "logon failure", "unknown user name or bad password"]
   },
   {
     "technique_id": "T1110.003",
@@ -18,21 +18,21 @@
     "technique_name": "Valid Accounts",
     "tactic": "Initial Access",
     "description": "Successful login via valid credentials.",
-    "keywords": ["Accepted password", "session opened for user", "login accepted", "user logged in"]
+    "keywords": ["Accepted password", "session opened for user", "login accepted", "user logged in", "successfully logged on", "logon success", "successful logon"]
   },
   {
     "technique_id": "T1136",
     "technique_name": "Create Account",
     "tactic": "Persistence",
     "description": "New user account created on the system.",
-    "keywords": ["useradd", "adduser", "new user", "created user", "user added"]
+    "keywords": ["useradd", "adduser", "new user", "created user", "user added", "user account was created", "a user account was created"]
   },
   {
     "technique_id": "T1036",
     "technique_name": "Masquerading",
     "tactic": "Defense Evasion",
     "description": "Use of sudo/su to assume another user’s identity.",
-    "keywords": ["sudo", "su root", "switched user"]
+    "keywords": ["sudo", "su root", "switched user", "special privileges assigned", "runas"]
   },
   {
     "technique_id": "T1055",
@@ -60,7 +60,7 @@
     "technique_name": "Command and Scripting Interpreter: Unix Shell",
     "tactic": "Execution",
     "description": "Execution via bash, sh, zsh or other Unix shells.",
-    "keywords": ["bash", "sh", "zsh", "python", "perl", "ruby"]
+    "keywords": ["bash", "sh", "zsh", "python", "perl", "ruby", "powershell", "cmd.exe", "wscript", "cscript"]
   },
   {
     "technique_id": "T1087",
@@ -112,4 +112,3 @@
     "keywords": ["remote code execution", "rce attempt"]
   }
 ]
-

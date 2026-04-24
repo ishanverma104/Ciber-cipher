@@ -112,6 +112,181 @@ def parse_log_line(line, hostname, mitre_rules, compliance_mapping):
         return None
 
 
+def is_windows_event_log_file(filename):
+    lower_name = filename.lower()
+    windows_markers = ("windows", "winlog", "eventlog", "evtx")
+    return filename.endswith(".json") and any(marker in lower_name for marker in windows_markers)
+
+
+def extract_windows_timestamp(event):
+    candidates = [
+        event.get("TimeCreated"),
+        event.get("@timestamp"),
+        event.get("timestamp"),
+        event.get("Timestamp"),
+        event.get("EventTime"),
+        event.get("System", {}).get("TimeCreated", {}).get("SystemTime"),
+    ]
+
+    for value in candidates:
+        if not value:
+            continue
+        if isinstance(value, dict):
+            value = value.get("SystemTime")
+        if not value:
+            continue
+
+        normalized = str(value).strip()
+        if normalized.endswith("Z"):
+            normalized = normalized[:-1] + "+00:00"
+
+        try:
+            return datetime.fromisoformat(normalized).isoformat()
+        except ValueError:
+            continue
+
+    return datetime.now().isoformat()
+
+
+def extract_windows_message(event):
+    message = (
+        event.get("Message")
+        or event.get("message")
+        or event.get("RenderingInfo", {}).get("Message")
+    )
+    if message:
+        return str(message).strip()
+
+    event_data = event.get("EventData")
+    if isinstance(event_data, dict):
+        if "Data" in event_data:
+            data = event_data["Data"]
+            if isinstance(data, list):
+                parts = []
+                for item in data:
+                    if isinstance(item, dict):
+                        name = item.get("Name") or item.get("@Name") or "value"
+                        value = item.get("value") or item.get("#text") or item.get("Value")
+                        if value not in (None, ""):
+                            parts.append(f"{name}={value}")
+                    elif item not in (None, ""):
+                        parts.append(str(item))
+                if parts:
+                    return "; ".join(parts)
+            elif data not in (None, ""):
+                return str(data).strip()
+
+        parts = []
+        for key, value in event_data.items():
+            if value not in (None, "", []):
+                parts.append(f"{key}={value}")
+        if parts:
+            return "; ".join(parts)
+
+    event_id = (
+        event.get("EventID")
+        or event.get("Id")
+        or event.get("System", {}).get("EventID")
+        or "unknown"
+    )
+    channel = (
+        event.get("LogName")
+        or event.get("Channel")
+        or event.get("System", {}).get("Channel")
+        or "Windows"
+    )
+    return f"Windows Event ID {event_id} on {channel}"
+
+
+def normalize_windows_event(event, hostname, mitre_rules, compliance_mapping):
+    if not isinstance(event, dict):
+        return None
+
+    resolved_hostname = (
+        event.get("MachineName")
+        or event.get("Computer")
+        or event.get("Hostname")
+        or event.get("System", {}).get("Computer")
+        or hostname
+    )
+    process = (
+        event.get("ProviderName")
+        or event.get("SourceName")
+        or event.get("LogName")
+        or event.get("Channel")
+        or event.get("System", {}).get("Provider", {}).get("Name")
+        or "Windows Event Log"
+    )
+    pid = (
+        event.get("ProcessId")
+        or event.get("Execution", {}).get("ProcessID")
+        or event.get("System", {}).get("Execution", {}).get("ProcessID")
+        or ""
+    )
+    message = extract_windows_message(event)
+    mitre_hits = match_mitre_rules(message, mitre_rules)
+    compliance_violations = get_compliance_violations(mitre_hits, compliance_mapping)
+
+    return {
+        "timestamp_utc": extract_windows_timestamp(event),
+        "hostname": resolved_hostname,
+        "process": process,
+        "pid": str(pid),
+        "message": message,
+        "mitre": mitre_hits,
+        "compliance": compliance_violations,
+        "event_id": event.get("EventID")
+        or event.get("Id")
+        or event.get("System", {}).get("EventID", ""),
+        "channel": event.get("LogName")
+        or event.get("Channel")
+        or event.get("System", {}).get("Channel", ""),
+    }
+
+
+def parse_windows_event_file(full_path, hostname, mitre_rules, compliance_mapping):
+    entries = []
+
+    with open(full_path, "r") as f:
+        content = f.read().strip()
+
+    if not content:
+        return entries
+
+    payload = None
+    try:
+        payload = json.loads(content)
+    except json.JSONDecodeError:
+        payload = None
+
+    if isinstance(payload, list):
+        iterable = payload
+    elif isinstance(payload, dict):
+        if isinstance(payload.get("events"), list):
+            iterable = payload["events"]
+        else:
+            iterable = [payload]
+    else:
+        iterable = []
+        for line in content.splitlines():
+            line = line.strip()
+            if not line:
+                continue
+            try:
+                iterable.append(json.loads(line))
+            except json.JSONDecodeError:
+                continue
+
+    for event in iterable:
+        entry = normalize_windows_event(
+            event, hostname, mitre_rules, compliance_mapping
+        )
+        if entry:
+            entries.append(entry)
+
+    return entries
+
+
 def main():
     parsed_logs = []
     mitre_rules = load_mitre_rules()
@@ -124,6 +299,15 @@ def main():
             # e.g., "debian-vm_auth.log" -> "debian-vm"
             stem = Path(filename).stem
             hostname = stem.split("_")[0] if "_" in stem else stem
+
+            if is_windows_event_log_file(filename):
+                parsed_logs.extend(
+                    parse_windows_event_file(
+                        full_path, hostname, mitre_rules, compliance_mapping
+                    )
+                )
+                continue
+
             with open(full_path, "r") as f:
                 for line in f:
                     entry = parse_log_line(

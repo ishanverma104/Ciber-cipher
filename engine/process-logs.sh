@@ -15,6 +15,10 @@ echo ""
 echo "[*] Running parsers..."
 echo ""
 
+echo "[*] Parsing security logs..."
+python3 "$SCRIPT_DIR/parsers/parse-syslog-security.py"
+
+echo ""
 echo "[*] Parsing network logs..."
 python3 "$SCRIPT_DIR/parsers/parse-network-logs.py"
 

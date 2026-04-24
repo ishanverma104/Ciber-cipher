@@ -1,7 +1,7 @@
 {
   "events": [
     {
-      "timestamp_utc": "2026-02-24T12:48:52.561179",
+      "timestamp_utc": "2026-04-13T04:18:41.162508",
       "hostname": "server1",
       "log_type": "k8s_audit",
       "namespace": "default",
@@ -20,7 +20,7 @@
       "raw_log": "[20/Feb/2026:10:25:00] user=admin verb=approve resource=certificatesigningrequests csr=signed-client-cert"
     },
     {
-      "timestamp_utc": "2026-02-24T12:48:52.560473",
+      "timestamp_utc": "2026-04-13T04:18:41.161821",
       "hostname": "server1",
       "log_type": "k8s_pod",
       "namespace": "default",
@@ -37,7 +37,7 @@
       "raw_log": "namespace=default pod=web-app-xyz123 [20/Feb/2026:10:20:00] Interactive shell detected: /bin/bash -i"
     },
     {
-      "timestamp_utc": "2026-02-24T12:48:52.558809",
+      "timestamp_utc": "2026-04-13T04:18:41.160773",
       "hostname": "server1",
       "log_type": "k8s_audit",
       "namespace": "default",
@@ -61,7 +61,7 @@
       "raw_log": "[20/Feb/2026:10:18:00] user=anonymous verb=impersonate resource=serviceaccounts namespace=default reason=\"as=system:admin\""
     },
     {
-      "timestamp_utc": "2026-02-24T12:48:52.558204",
+      "timestamp_utc": "2026-04-13T04:18:41.160249",
       "hostname": "server1",
       "log_type": "k8s_audit",
       "namespace": "default",
@@ -85,7 +85,7 @@
       "raw_log": "[20/Feb/2026:10:17:00] user=kube-proxy verb=list resource=configmaps namespace=default denied=\"forbidden\""
     },
     {
-      "timestamp_utc": "2026-02-24T12:48:52.558159",
+      "timestamp_utc": "2026-04-13T04:18:41.160213",
       "hostname": "server1",
       "log_type": "k8s_audit",
       "namespace": "kube-system",
@@ -109,7 +109,7 @@
       "raw_log": "[20/Feb/2026:10:16:00] user=service-account verb=get resource=secrets namespace=kube-system reason=\"unauthorized access denied\""
     },
     {
-      "timestamp_utc": "2026-02-24T12:48:52.557826",
+      "timestamp_utc": "2026-04-13T04:18:41.159972",
       "hostname": "server1",
       "log_type": "k8s_audit",
       "namespace": "default",
